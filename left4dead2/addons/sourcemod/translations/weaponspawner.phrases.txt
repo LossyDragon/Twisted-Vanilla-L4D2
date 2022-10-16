@@ -1,0 +1,515 @@
+"Phrases"
+{
+	// Commands
+	"SpawnWeaponUsage"
+	{
+		"en"		"Usage: sm_spawnweapon [weapon_name] <amount>"
+		"ru"		"Использование: sm_spawnweapon [weapon_name] <amount>"
+	}
+	
+	"SpawnError"
+	{
+		"en"		"Could not find spawn point."
+		"ru"		"Не удалось найти точку появления."
+	}
+	
+	"GiveWeaponUsage"
+	{
+		"en"		"Usage: sm_giveweapon <#userid|name> [weapon_name]"
+		"ru"		"Использование: sm_giveweapon <#userid|name> [weapon_name]"
+	}
+
+	"SpawnZombieUsage"
+	{
+		"en"		"Usage: sm_zspawn [zombie_name] <amount>"
+		"ru"		"Использование: sm_zspawn [zombie_name] <amount>"
+	}
+
+	"MinigunFailed"
+	{
+		"en"		"Failed to create Machine Gun ;("
+		"ru"		"Не удалось создать Machine Gun ;("
+	}
+
+	"RemoveMinigunError_01"
+	{
+		"en"		"You are not looking at any entity or entity is not valid."
+		"ru"		"Вы не смотрите ни на какой-либо предмет или предмет не действует."
+	}
+
+	"RemoveMinigunError_02"
+	{
+		"en"		"This is not a Machine Gun."
+		"ru"		"Это не Пулемет."
+	}
+
+	"SpawnMiniGun"
+	{
+		"en"		"Spawn .50 Cal"
+		"ru"		"Создать .50 Cal"
+	}
+
+	"SpawnMiniGun2"
+	{
+		"en"		"Spawn Mini Gun"
+		"ru"		"Создать Mini Gun"
+	}
+	"RemoveMiniGun"
+	{
+		"en"		"Remove Machine Gun"
+		"ru"		"Удалить Пулемет"
+	}
+
+	// Menu
+	"WeaponSpawner"
+	{
+		"en"		"Weapon Spawner"
+		"ru"		"Меню выбора оружие"
+	}
+
+	"SpawnWeapon"
+	{
+		"en"		"Spawn Weapon"
+		"ru"		"Выдать оружие"
+	}
+
+	"DisplayWeaponMenuTitle"
+	{
+		"en"		"Spawn Weapon"
+		"ru"		"Меню выбора"
+	}
+
+	"BulletBasedMenuTitle"
+	{
+		"en"		"Bullet Based Weapons:"
+		"ru"		"Автоматическое:"
+	}
+
+	"ShellBasedMenuTitle"
+	{
+		"en"		"Shell Based Weapons:"
+		"ru"		"Дробовики:"
+	}
+
+	"ExplosiveBasedMenuTitle"
+	{
+		"en"		"Explosive Based Weapons:"
+		"ru"		"Взрывоопасные:"
+	}
+
+	"HealthMenuTitle"
+	{
+		"en"		"Health Related:"
+		"ru"		"Медикаменты:"
+	}
+	
+	"MiscMenuTitle"
+	{
+		"en"		"Misc Weapons/Addons:"
+		"ru"		"Другое оружие/дополнение:"
+	}
+	
+	"MeleeMenuTitle"
+	{
+		"en"		"Melee Weapons:"
+		"ru"		"Холодное оружие:"
+	}
+	
+	"WeaponGiveMenuTitle"
+	{
+		"en"		"Give Weapon"
+		"ru"		"Выдать оружие"
+	}	
+	
+	// Weapons
+	"BulletBased"
+	{
+		"en"		"Bullet Based"
+		"ru"		"Автоматическое"
+	}
+	
+	"ShellBased"
+	{
+		"en"		"Shell Based"
+		"ru"		"Дробовики"
+	}
+	
+	"ExplosiveBased"
+	{
+		"en"		"Explosive Based"
+		"ru"		"Взрывоопасные"
+	}
+	
+	"HealthRelated"
+	{
+		"en"		"Health Related"
+		"ru"		"Медикаменты"
+	}
+	
+	"Misc"
+	{
+		"en"		"Misc"
+		"ru"		"Разное"
+	}
+	
+	"MeleeWeapons"
+	{
+		"en"		"Melee Weapons"
+		"ru"		"Холодное оружие"
+	}
+	
+	// Bullet Based
+	"HuntingRifle"
+	{
+		"en"		"Hunting Rifle"
+		"ru"		"Охотничья винтовка"
+	}
+	
+	"Pistol"
+	{
+		"en"		"Pistol"
+		"ru"		"Пистолет"
+	}
+	
+	"DesertEagle"
+	{
+		"en"		"Desert Eagle"
+		"ru"		"Магнум"
+	}
+	
+	"Rifle"
+	{
+		"en"		"Rifle M16"
+		"ru"		"Штурмовая винтовка M16"
+	}
+	
+	"DesertRifle"
+	{
+		"en"		"Desert Rifle"
+		"ru"		"Боевая винтовка"
+	}
+	
+	"SubmachineGun"
+	{
+		"en"		"Submachine Gun"
+		"ru"		"Пистолет-пулемёт"
+	}
+	
+	"SilencedSubmachineGun"
+	{
+		"en"		"Silenced Submachine Gun"
+		"ru"		"Пистолет-пулемёт с глушителем"
+	}
+	
+	"MilitarySniper"
+	{
+		"en"		"Military Sniper"
+		"ru"		"Снайперская винтовка G3 SG1"
+	}
+	
+	"AvtomatKalashnikova"
+	{
+		"en"		"Avtomat Kalashnikova"
+		"ru"		"AK-47"
+	}
+	
+	"SIGSG550"
+	{
+		"en"		"SIG SG 550"
+		"ru"		"Штурмовая винтовка 90"
+	}
+
+	"RifleM60"
+	{
+		"en"		"Machine gun M60"
+		"ru"		"Пулемёт M60"
+	}
+
+	"SubmachineGunMP5"
+	{
+		"en"		"Submachine Gun MP5"
+		"ru"		"Пистолет-пулемёт MP5"
+	}
+	
+	"AWP"
+	{
+		"en"		"Accuracy International AWSM"
+		"ru"		"Снайперская винтовка AWSM"
+	}
+	
+	"ScoutSniper"
+	{
+		"en"		"Steyr Scout"
+		"ru"		"Снайперская винтовка Steyr"
+	}
+
+	"LaserSightBox"
+	{
+		"en"		"Laser Sight Box"
+		"ru"		"Лазерные целеуказатели"
+	}
+
+	
+	// Shell Based
+	"AutoShotgun"
+	{
+		"en"		"Auto Shotgun"
+		"ru"		"Автоматический дробовик"
+	}
+	
+	"ChromeShotgun"
+	{
+		"en"		"Chrome Shotgun"
+		"ru"		"Хромированный дробовик"
+	}
+	
+	"SpasShotgun"
+	{
+		"en"		"Spas Shotgun"
+		"ru"		"Боевой дробовик"
+	}
+	
+	"PumpShotgun"
+	{
+		"en"		"Pump Shotgun"
+		"ru"		"Помповый дробовик"
+	}
+	
+	// Explosive Based
+	"GrenadeLauncher"
+	{
+		"en"		"Grenade Launcher"
+		"ru"		"Гранатомет"
+	}
+	
+	"ExplosiveBarrel"
+	{
+		"en"		"Explosive Barrel"
+		"ru"		"Бочка с бензином"
+	}
+	
+	"FireworksCrate"
+	{
+		"en"		"Fireworks Crate"
+		"ru"		"Коробки с фейерверком"
+	}
+	
+	"Gascan"
+	{
+		"en"		"Gascan"
+		"ru"		"Канистра"
+	}
+	
+	"Molotov"
+	{
+		"en"		"Molotov"
+		"ru"		"Коктель Молотова"
+	}
+	
+	"OxygenTank"
+	{
+		"en"		"Oxygen Tank"
+		"ru"		"Балон с воздухом"
+	}
+	
+	"PipeBomb"
+	{
+		"en"		"Pipe Bomb"
+		"ru"		"Бомба"
+	}
+	
+	"PropaneTank"
+	{
+		"en"		"Propane Tank"
+		"ru"		"Балон с пропаном"
+	}
+	
+	// Health Related
+	"FullHealth"
+	{
+		"en"		"Full Health"
+		"ru"		"Аптечка"
+	}
+	
+	"Adrenaline"
+	{
+		"en"		"Adrenaline"
+		"ru"		"Адреналин"
+	}
+	
+	"Defibrillator"
+	{
+		"en"		"Defibrillator"
+		"ru"		"Дефибриллятор"
+	}
+	
+	"FirstAidKit"
+	{
+		"en"		"First Aid Kit"
+		"ru"		"Аптечка первой помощи"
+	}
+	
+	"PainPills"
+	{
+		"en"		"Pain Pills"
+		"ru"		"Обезболивающее"
+	}
+	
+	// Misc
+	"ChainSaw"
+	{
+		"en"		"Chain Saw"
+		"ru"		"Бензопила"
+	}
+	
+	"AmmoStack"
+	{
+		"en"		"Ammo Stack"
+		"ru"		"Боеприпасы"
+	}
+	
+	"Ammo"
+	{
+		"en"		"Refill Ammo"
+		"ru"		"Пополнение боеприпасов"
+	}
+	
+	"LaserSight"
+	{
+		"en"		"Laser Sight"
+		"ru"		"Лазерный целеуказатель"
+	}
+	
+	"ExplosiveAmmoPack"
+	{
+		"en"		"Explosive Ammo Pack"
+		"ru"		"Разрывные патроны"
+	}
+	
+	"ExplosiveAmmo"
+	{
+		"en"		"Explosive Ammo"
+		"ru"		"Разрывные патроны"
+	}
+	
+	"IncendiaryAmmoPack"
+	{
+		"en"		"Incendiary Ammo Pack"
+		"ru"		"Зажигательные патроны"
+	}
+	
+	"IncendiaryAmmo"
+	{
+		"en"		"Incendiary Ammo"
+		"ru"		"Зажигательные патроны"
+	}
+	
+	"VomitJar"
+	{
+		"en"		"Vomit Jar"
+		"ru"		"Рвота толстяка"
+	}
+	
+	"Gnome"
+	{
+		"en"		"Gnome"
+		"ru"		"Гном Чомски"
+	}
+	
+	"Cola"
+	{
+		"en"		"Cola Bottles"
+		"ru"		"Ящик колы"
+	}
+		
+	// Melee
+	"BaseballBat"
+	{
+		"en"		"Baseball Bat"
+		"ru"		"Бейсбольная бита"
+	}
+	
+	"CricketBat"
+	{
+		"en"		"Cricket Bat"
+		"ru"		"Бейсбольная бита"
+	}
+	
+	"Crowbar"
+	{
+		"en"		"Crowbar"
+		"ru"		"Монтировка"
+	}
+	
+	"ElectricGuitar"
+	{
+		"en"		"Electric Guitar"
+		"ru"		"Электрогитара"
+	}
+	
+	"FireAxe"
+	{
+		"en"		"Fire Axe"
+		"ru"		"Пожарный топор"
+	}
+	
+	"FryingPan"
+	{
+		"en"		"Frying Pan"
+		"ru"		"Сковорода"
+	}
+	
+	"Katana"
+	{
+		"en"		"Katana"
+		"ru"		"Катана"
+	}
+	
+	"Machete"
+	{
+		"en"		"Machete"
+		"ru"		"Мачете"
+	}
+	
+	"Tonfa"
+	{
+		"en"		"Tonfa"
+		"ru"		"Полицейская дубинка"
+	}
+	
+	"Knife"
+	{
+		"en"		"Knife"
+		"ru"		"Нож"
+	}
+	
+	"GolfClub"
+	{
+		"en"		"Golf Club"
+		"ru"		"Клюшка для гольфа"
+	}
+	
+	"Riotshield"
+	{
+		"en"		"Riot Shield"
+		"ru"		"Полицейский щит"
+	}
+	
+	"Pitchfork"
+	{
+		"en"		"Pitchfork"
+		"ru"		"Вилы"
+	}
+	
+	"Shovel"
+	{
+		"en"		"Shovel"
+		"ru"		"лопата"
+	}
+	
+	"MeleeWeapons"
+	{
+		"en"		"Melee Weapons"
+		"ru"		"Холодное оружие"
+	}
+}

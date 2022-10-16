@@ -1,0 +1,43 @@
+"Games"
+{
+	"#default"
+	{
+		"Functions"
+		{
+			"CGasCan::OnActionComplete"
+			{
+				"signature"		"CGasCan::OnActionComplete"
+				"callconv"		"thiscall"
+				"return"		"int"
+				"this"			"entity"
+				"arguments"
+				{
+					"client"
+					{
+						"type"	"cbaseentity"
+					}
+					"entity"
+					{
+						"type"	"cbaseentity"
+					}
+				}
+			}
+		}
+	}
+
+	"left4dead2"
+	{
+		"Signatures"
+		{
+			/* CGasCan::OnActionComplete(CGasCan *this, CTerrorPlayer *, CBaseEntity *) */
+			"CGasCan::OnActionComplete"
+			{
+				"library"		"server"
+				"linux"			"@_ZN7CGasCan16OnActionCompleteEP13CTerrorPlayerP11CBaseEntity"
+				"windows"		"\x2A\x2A\x2A\x2A\x2A\x2A\x2A\x2A\x2A\xA1\x2A\x2A\x2A\x2A\x33\x2A\x89\x2A\x2A\x8B\x2A\x2A\x53\x8B\x2A\x8B\x2A\x2A\x2A\x2A\x2A\x83"
+				/* ? ? ? ? ? ? ? ? ? A1 ? ? ? ? 33 ? 89 ? ? 8B ? ? 53 8B ? 8B ? ? ? ? ? 83 */
+				/* Search: "gascan_pour_completed" */
+			}
+		}
+	}
+}

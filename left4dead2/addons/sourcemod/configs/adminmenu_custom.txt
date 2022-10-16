@@ -1,0 +1,78 @@
+// Custom admin menu commands.
+// For more information:
+//
+// http://wiki.alliedmods.net/Custom_Admin_Menu_%28SourceMod%29
+//
+// Note: This file must be in Valve KeyValues format (no multiline comments)
+//
+"Commands"
+{
+    "PlayerCommands"
+    {
+        "Respawn Survivor"
+        {
+            "cmd"        "sm_respawn #1"
+            "admin"        "sm_kick"
+            "execute"    "player"
+            "1"
+            {
+                "type"        "player"
+                "method"    "name"
+                "title"        "Player:"
+            }
+        }
+    }
+    "Spawn Uncommons"
+    {
+        "Spawn Uncommon Zombie"
+        {
+            "cmd"            "sm_spawnuncommon @1"
+            "admin"            "sm_spawnuncommon"
+            "execute"        "player"
+            "1"
+            {
+                "1"            "riot"
+                "1."        "Riot Cop (Parish)"
+                "2"            "ceda"
+                "2."        "CEDA Agent (Center)"
+                "3"            "clown"
+                "3."        "Clown (Carnival)"
+                "4"            "mud"
+                "4."        "Mudman (Swamp)"
+                "5"            "roadcrew"
+                "5."        "Road Worker (Rain)"
+                "6"            "jimmy"
+                "6."        "Jimmy Gibbs Jr. (Extra)"
+                "7"            "fallen"
+                "7."        "Fallen Survivor (Extra)"
+                "8"            "random"
+                "8."        "Randomized"
+            }
+        }
+        "Spawn Uncommon Horde"
+        {
+            "cmd"            "sm_spawnuncommonhorde @1"
+            "admin"            "sm_spawnuncommonhorde"
+            "execute"        "player"
+            "1"
+            {
+                "1"            "riot"
+                "1."        "Riot Cop (Parish)"
+                "2"            "ceda"
+                "2."        "CEDA Agent (Center)"
+                "3"            "clown"
+                "3."        "Clown (Carnival)"
+                "4"            "mud"
+                "4."        "Mudman (Swamp)"
+                "5"            "roadcrew"
+                "5."        "Road Worker (Rain)"
+                "6"            "jimmy"
+                "6."        "Jimmy Gibbs Jr. (Extra)"
+                "7"            "fallen"
+                "7."        "Fallen Survivor (Extra)"
+                "8"            "random"
+                "8."        "Randomized"
+            }
+        }
+    }
+} 

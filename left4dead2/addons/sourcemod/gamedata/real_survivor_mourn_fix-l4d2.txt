@@ -1,0 +1,43 @@
+"Games"
+{
+	"left4dead2"
+	{
+		"Addresses"
+		{
+			"CheckFriendSightings"
+			{
+				"signature"	"CTerrorPlayer::CheckFriendSightings"
+			}
+		}
+		
+		"Offsets"
+		{
+			"CheckFriendSightings_CharacterConditionA"
+			{
+				"windows"	"465"
+				"linux"		"924"
+			}
+			"CheckFriendSightings_CharacterConditionB"
+			{
+				"windows"	"593"
+				"linux"		"1064"
+			}
+			"CheckFriendSightings_CharacterConditionC"
+			{
+				"windows"	"818"
+				"linux"		"1341"
+			}
+		}
+		
+		"Signatures"
+		{
+			"CTerrorPlayer::CheckFriendSightings"
+			{
+				"library"	"server"
+				"linux"		"@_ZN13CTerrorPlayer20CheckFriendSightingsEv"
+				"windows"	"\x55\x8B\x2A\x81\x2A\x2A\x2A\x2A\x2A\xA1\x2A\x2A\x2A\x2A\x33\x2A\x89\x2A\x2A\xA1\x2A\x2A\x2A\x2A\x53\x56\x57\x33\x2A\x89\x2A\x2A\x2A\x2A\x2A\x89\x2A\x2A\x2A\x2A\x2A\x8B\x2A\x39\x2A\x2A\x74\x2A\x8B\x2A\x2A\x68\x2A\x2A\x2A\x2A\x8B\x2A\x2A\x68\x2A\x2A\x2A\x2A\x68\x2A\x2A\x2A\x2A\x68\x2A\x2A\x2A\x2A\x68\x2A\x2A\x2A\x2A\x68\x2A\x2A\x2A\x2A\x57\x57\x57\x57\x8D\x2A\x2A\x2A\x2A\x2A\x51\x50\xFF\x2A\xA1\x2A\x2A\x2A\x2A\x83\x2A\x2A\x8B\x2A\x2A\x2A\x2A\x2A\x8B\x2A\x2A\x8B\x2A\x2A\x2A\x2A\x2A\x6A\x2A\x57\x68\x2A\x2A\x2A\x2A\x57\x89\x2A\x2A\x2A\x2A\x2A\x8B"
+				/* 55 8B ? 81 ? ? ? ? ? A1 ? ? ? ? 33 ? 89 ? ? A1 ? ? ? ? 53 56 57 33 ? 89 ? ? ? ? ? 89 ? ? ? ? ? 8B ? 39 ? ? 74 ? 8B ? ? 68 ? ? ? ? 8B ? ? 68 ? ? ? ? 68 ? ? ? ? 68 ? ? ? ? 68 ? ? ? ? 68 ? ? ? ? 57 57 57 57 8D ? ? ? ? ? 51 50 FF ? A1 ? ? ? ? 83 ? ? 8B ? ? ? ? ? 8B ? ? 8B ? ? ? ? ? 6A ? 57 68 ? ? ? ? 57 89 ? ? ? ? ? 8B */
+			}
+		}
+	}
+}

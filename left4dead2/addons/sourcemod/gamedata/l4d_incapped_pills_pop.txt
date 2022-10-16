@@ -1,0 +1,128 @@
+"Games"
+{
+	"left4dead"
+	{
+		"Functions"
+		{
+			"CTerrorPlayer::OnLedgeGrabbed"
+			{
+				"signature"		"CTerrorPlayer::OnLedgeGrabbed"
+				"callconv"		"thiscall"
+				"return"		"int"
+				"this"			"entity"
+				"arguments"
+				{
+					"a2"
+					{
+						"type"	"vectorptr"
+					}
+				}
+			}
+		}
+		
+		"Offsets"
+		{
+			"Music::OnSavedFromLedgeHang"
+			{
+				"linux"		"58"
+				"windows"	"57"
+				/* Found in vtable offsets list */
+			}
+			"CMusic"
+			{
+				"linux"		"10160"
+				"windows"	"10140"
+				/* Found in CTerrorPlayer::~CTerrorPlayer XRef <= Music::~Music */
+				/* Linux: _ZN5MusicD2Ev */
+				/* Windows: Go to IDA View, Press "G" or "Ctrl + L" enter external symbol: "SteamAPI_UnregisterCallback" => X or Ctrl+X => */
+				/* We'll need to find Xref to CTerrorPlayer::~CTerrorPlayer, this is the only sub that contains both KeyValues::deleteThis, and SteamAPI_UnregisterCallback as return value.
+				/* (for me, it was penultimate in the list) */
+				/* Then, find Music::~Music - it's the sub containing line: Music::StopPlaying((int)"all", -1.0, 0);
+				/* Once you found it, see the offset value here: Music::~Music(this + 2535); You'll have to *4 or see the assembly instruction: lea ecx, [esi+279Ch]
+				/* Well, we also have to already have KeyValues::deleteThis sig, but you can find it via XRef from GetParticleManifest, found by string "PARTICLE SYSTEM: Unable to load manifest file '%s'\n" */
+				//
+				/* Alternate way to find those offset would be Detouring Music::OnLedgeHangTwoHands => catching "this" value and compare via "for" loop with +4 step from GetEntityAddress(client) */
+				/* However, for Windows, it is no way to build the unique sig for above member, so at the moment you can only detour it in 2 steps by manual calculating required string table pointer to make the sig be unique */
+			}
+		}
+		
+		"Signatures"
+		{
+			"CTerrorPlayer::OnLedgeGrabbed"
+			{
+				"library"		"server"
+				"linux"			"@_ZN13CTerrorPlayer14OnLedgeGrabbedERK6Vector"
+				"windows"	"\x2A\x2A\x2A\x2A\x2A\x2A\x81\xEC\x2A\x2A\x2A\x2A\x53\x56\x8B\xF1\x8B\x06\x8B\x90\x2A\x2A\x2A\x2A\x57\xFF\xD2\x84\xC0"
+				/* ? ? ? ? ? ? 81 EC ? ? ? ? 53 56 8B F1 8B 06 8B 90 ? ? ? ? 57 FF D2 84 C0 */
+				/* Search by "info_hang_lighting" string */
+			}
+			"CTerrorPlayer::OnRevived"
+			{
+				"library"		"server"
+				"linux"			"@_ZN13CTerrorPlayer9OnRevivedEv"
+				"windows"	"\x2A\x2A\x2A\x2A\x2A\x56\x57\x8B\xF9\x8B\x07\x8B\x90\x2A\x2A\x2A\x2A\xFF\xD2\x84\xC0\x0F\x84"
+				/* ? ? ? ? ? 56 57 8B F9 8B 07 8B 90 ? ? ? ? FF D2 84 C0 0F 84 */
+				/* Search by "RevivedByFriend" string */
+			}
+		}
+	}
+	
+	"left4dead2"
+	{
+		"Functions"
+		{
+			"CTerrorPlayer::OnLedgeGrabbed"
+			{
+				"signature"		"CTerrorPlayer::OnLedgeGrabbed"
+				"callconv"		"thiscall"
+				"return"		"int"
+				"this"			"entity"
+				"arguments"
+				{
+					"a2"
+					{
+						"type"	"vectorptr"
+					}
+				}
+			}
+		}
+		
+		"Offsets"
+		{
+			"Music::OnSavedFromLedgeHang"
+			{
+				"linux"		"72"
+				"windows"	"71"
+				/* Found in vtable offsets list */
+			}
+			"CMusic"
+			{
+				"linux"		"15028"
+				"windows"	"15048"
+				/* Found in CTerrorPlayer::~CTerrorPlayer XRef <= Music::~Music */
+				/* Linux: _ZN5MusicD2Ev */
+				/* Windows: See explanation in L4D1 section */
+			}
+		}
+		
+		"Signatures"
+		{
+			"CTerrorPlayer::OnLedgeGrabbed"
+			{
+				"library"		"server"
+				"linux"			"@_ZN13CTerrorPlayer14OnLedgeGrabbedERK6Vector"
+				"windows"		"\x2A\x2A\x2A\x2A\x2A\x2A\x2A\x2A\x2A\xA1\x2A\x2A\x2A\x2A\x33\x2A\x89\x2A\x2A\x53\x56\x8B\x2A\x8B\x2A\x8B\x2A\x2A\x2A\x2A\x2A\x57\x2A\x2A\x84\x2A\x0F\x84\x2A\x2A\x2A\x2A\x8B"
+				/* ? ? ? ? ? ? ? ? ? A1 ? ? ? ? 33 ? 89 ? ? 53 56 8B ? 8B ? 8B ? ? ? ? ? 57 ? ? 84 ? 0F 84 ? ? ? ? 8B */
+				/* Search: "%s grabs a ledge - last standing at %s." */
+			}
+			"CTerrorPlayer::OnRevived"
+			{
+				"library"		"server"
+				"linux"			"@_ZN13CTerrorPlayer9OnRevivedEv"
+				"windows"		"\x2A\x2A\x2A\x2A\x2A\x2A\x53\x56\x8B\xF1\x8B\x06\x8B\x90\x2A\x2A\x2A\x2A\x57\xFF\xD2\x84\xC0\x0F\x84\x2A\x2A\x2A\x2A\x8B\xCE"
+				/* ? ? ? ? ? ? 53 56 8B F1 8B 06 8B 90 ? ? ? ? 57 FF D2 84 C0 0F 84 ? ? ? ? 8B CE */
+				/* ->Search for string "revive_success", then open vtables window. Should be the 5th member. */
+			}
+		}
+	}
+}

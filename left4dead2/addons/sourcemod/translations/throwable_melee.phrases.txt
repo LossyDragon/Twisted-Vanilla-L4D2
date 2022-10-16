@@ -1,0 +1,92 @@
+"Phrases"
+{
+	"Melee_Equip"
+	{
+		"en"			"{WHITE}You can throw Melee weapons by pressing the {ORANGE}ZOOM {WHITE}key."
+	}
+	"Melee_Hit_Survivor"
+	{
+		"#format"		"{1:s},{2:s},{3:s}"
+		"en"			"{ORANGE}{1} {WHITE}threw a {LIGHTGREEN}{2} {WHITE}at {ORANGE}{3}{WHITE}."
+	}
+	"Melee_Hit_Special"
+	{
+		"#format"		"{1:s},{2:s},{3:s}"
+		"en"			"{ORANGE}{1} {WHITE}threw a {LIGHTGREEN}{2} {WHITE}and killed {ORANGE}{3}{WHITE}."
+	}
+	"Melee_Hit_Common"
+	{
+		"#format"		"{1:s},{2:s},{3:s}"
+		"en"			"{ORANGE}{1} {WHITE}threw a {LIGHTGREEN}{2} {WHITE}and killed {ORANGE}{3}{WHITE}."
+	}
+
+	"infected"
+	{
+		"en"			"Infected"
+	}
+	"witch"
+	{
+		"en"			"Witch"
+	}
+
+	"baseball_bat"
+	{
+		"en"			"Baseball Bat"
+	}
+	"cricket_bat"
+	{
+		"en"			"Cricket Bat"
+	}
+	"crowbar"
+	{
+		"en"			"Crowbar"
+	}
+	"electric_guitar"
+	{
+		"en"			"Electric Guitar"
+	}
+	"fireaxe"
+	{
+		"en"			"Fire Axe"
+	}
+	"frying_pan"
+	{
+		"en"			"Frying Pan"
+	}
+	"golfclub"
+	{
+		"en"			"Golf Club"
+	}
+	"katana"
+	{
+		"en"			"Katana"
+	}
+	"knife"
+	{
+		"en"			"Knife"
+	}
+	"machete"
+	{
+		"en"			"Machete"
+	}
+	"tonfa"
+	{
+		"en"			"Tonfa"
+	}
+	"pitchfork"
+	{
+		"en"			"Pitchfork"
+	}
+	"shovel"
+	{
+		"en"			"Shove"
+	}
+	"riot_shield"
+	{
+		"en"			"Riot Shield"
+	}
+	"generic"
+	{
+		"en"			"Melee weapon"
+	}
+}

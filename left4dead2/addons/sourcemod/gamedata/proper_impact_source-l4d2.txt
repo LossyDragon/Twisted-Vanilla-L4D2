@@ -1,0 +1,33 @@
+"Games"
+{
+	"left4dead2"
+	{
+		"Addresses"
+		{
+			"ForEachPlayerCID"
+			{
+				"signature"	"ForEachPlayer<ChargeImpactDistributor>"
+			}
+		}
+		
+		"Offsets"
+		{
+			"ForEachPlayerCID_StaggerSource"
+			{
+				"windows"	"294"
+				"linux"		"906"
+			}
+		}
+		
+		"Signatures"
+		{
+			"ForEachPlayer<ChargeImpactDistributor>"
+			{
+				"library"	"server"
+				"linux"		"@_Z13ForEachPlayerI23ChargeImpactDistributorEbRT_"
+				"windows"	"\x53\x8B\x2A\x83\x2A\x2A\x83\x2A\x2A\x83\x2A\x2A\x55\x8B\x2A\x2A\x89\x2A\x2A\x2A\x8B\x2A\x81\x2A\x2A\x2A\x2A\x2A\x56\x57\x8B\x2A\x2A\x8B\x2A\x89"
+				/* 53 8B ? 83 ? ? 83 ? ? 83 ? ? 55 8B ? ? 89 ? ? ? 8B ? 81 ? ? ? ? ? 56 57 8B ? ? 8B ? 89 */
+			}
+		}
+	}
+}

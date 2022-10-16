@@ -1,0 +1,192 @@
+// {white}
+// {green}
+// {orange}
+// {green}
+
+"Phrases"
+{
+	"GetOffInfected"
+	{
+		"en"		"Get that Infected off you first"
+		"ru"		"Сперва снимите заражённого с себя"
+		"pt"		"Tire aquele infectado de cima de você primeiro"
+		"zho"		"請先解除特感控制"
+		"chi"		"请先解除特感控制"
+		"de"		"Werde den Infizierten von dir los"
+	}
+	"AlreadyReviving"
+	{
+		"en"		"You're being revived already"
+		"ru"		"Вас уже поднимают"
+		"pt"		"Você já está sendo revivido"
+		"zho"		"您正在被救起"
+		"chi"		"您正在被救起"
+		"de"		"Dir wird bereits hochgeholfen"
+	}
+	"NoItems"
+	{
+		"en"		"{white}You ain't got no {green}"
+		"ru"		"{white}У вас нет {green}"
+		"pt"		"{white}Você não tem {green}"
+		"zho"		"{white}您身上沒有{green}"
+		"chi"		"{white}您身上沒有{green}"
+		"de"		"{white}Du hast keine {green}"
+	}
+	"of_pills"
+	{
+		"en"		"pills"
+		"ru"		"таблеток"
+		"pt"		"pílulas"
+		"zho"		"止痛藥"
+		"chi"		"止痛药"
+		"de"		"Schmerzmittel"
+	}
+	"of_adrenaline"
+	{
+		"en"		"adrenaline"
+		"ru"		"адреналина"
+		"pt"		"adrenalina"
+		"zho"		"腎上腺素"
+		"chi"		"肾上腺素"
+		"de"		"Adrenalin"
+	}
+	"of_medkit"
+	{
+		"en"		"medkit"
+		"ru"		"аптечки"
+		"pt"		"kit de primeiros socorros"
+		"zho"		"治療包"
+		"chi"		"医疗包"
+		"de"		"Erste-Hilfe-Kasten"
+	}
+	"Search"
+	{
+		"en"		"\n{white}Though, you can search them {orange}on the floor."
+		"ru"		"\n{white}Но вы можете поискать их {orange}на полу."
+		"pt"		"\n{white}Você pode achar {orange}No chão."
+		"zho"		"\n{white}找尋{orange}地上附近{white}有無醫療物品."
+		"chi"		"\n{white}找寻{orange}地上附近{white}有无医疗用品."
+		"de"		"\n{white}Aber du kannst sie {orange}auf dem Boden {white}suchen."
+	}
+	"Used_Pills"
+	{
+		"en"		"used his pills and revived himself!"
+		"ru"		"использовал таблетки, чтобы подняться!"
+		"pt"		"usou os comprimidos para se levantar!"
+		"zho"		"使用了止痛藥並救起自己！"
+		"chi"		"使用了止痛药並救起自己！"
+		"de"		"nutzte seine Schmerzmittel um aufzustehen!"
+	}
+	"Used_Adrenaline"
+	{
+		"en"		"used his adrenaline and revived himself!"
+		"ru"		"использовал адреналин, чтобы подняться!"
+		"pt"		"usou adrenalina para se levantar!"
+		"zho"		"使用了腎上腺素並救起自己！"
+		"chi"		"使用了肾上腺素並救起自己！"
+		"de"		"nutzte sein Adrenalin um aufzustehen!"
+	}
+	"Used_Medkit"
+	{
+		"en"		"used his medkit and revived himself!"
+		"ru"		"использовал аптечку, чтобы подняться!"
+		"pt"		"usou o kit de primeiros socorros para se levantar!"
+		"zho"		"使用了治療包並救起自己！"
+		"chi"		"使用了医疗包並救起自己！"
+		"de"		"nutzte seinen Erste-Hilfe-Kasten um aufzustehen!"
+	}
+	"Found_Pills"
+	{
+		"en"		"groped pills and revived himself!"
+		"ru"		"нащупал таблетки и поднялся!"
+		"ru"		"achou as pílulas e se levantou!"
+		"zho"		"撿到了止痛藥並救起自己！"
+		"chi"		"捡到了止痛药并救起自己！"
+		"de"		"fand Schmerzmittel und stand auf!"
+	}
+	"Found_Adrenaline"
+	{
+		"en"		"groped adrenaline and revived himself!"
+		"ru"		"нащупал адреналин и поднялся!"
+		"pt"		"achou a adrenalina e se levantou!"
+		"zho"		"撿到了腎上腺素並救起自己！"
+		"chi"		"捡到了肾上腺素並救起自己！"
+		"de"		"fand Adrenalin und stand auf!"
+	}
+	"Found_Medkit"
+	{
+		"en"		"groped medkit and revived himself!"
+		"ru"		"нащупал аптечку и поднялся!"
+		"pt"		"achou o kit de primeiros socorros e se lavantou!"
+		"zho"		"撿到了治療包並救起自己！"
+		"chi"		"捡到了医疗包並救起自己！"
+		"de"		"fand Erste-Hilfe-Kasten und stand auf!"
+	}
+	"Press"
+	{
+		"en"		"{green}Press"
+		"ru"		"{green}Нажми"
+		"pt"		"{green}Clique em"
+		"zho"		"{green}按住"
+		"chi"		"{green}按住"
+		"de"		"{green}Drücke"
+	}
+	"IN_JUMP"
+	{
+		"en"		"{orange}(JUMP)"
+		"ru"		"{orange}(ПРЫЖОК)"
+		"pt"		"{orange}(PULANDO)"
+		"zho"		"{orange}(空白鍵)"
+		"chi"		"{orange}(空白键)"
+		"de"		"{orange}(SPRINGEN)"
+	}
+	"IN_DUCK"
+	{
+		"en"		"{orange}(CROUCH)"
+		"ru"		"{orange}(ПРИСЕСТЬ)"
+		"pt"		"{orange}(AGACHANDO)"
+		"zho"		"{orange}(蹲下鍵)"
+		"chi"		"{orange}(蹲下键)"
+		"de"		"{orange}(HOCKEN)"
+	}
+	"IN_USE"
+	{
+		"en"		"{orange}(USE)"
+		"ru"		"{orange}(ИСПОЛЬЗОВАТЬ)"
+		"pt"		"{orange}(USANDO)"
+		"zho"		"{orange}(E鍵)"
+		"chi"		"{orange}(E键)"
+		"de"		"{orange}(BENUTZEN)"
+	}
+	"Hint_Pills"
+	{
+		"en"		"{green}to stand back up by yourself using {green}Pills"
+		"ru"		"{green}чтобы подняться с помощью {green}таблеток"
+		"pt"		"{green}está se levantando usando {green}Pílulas"
+		"zho"		"{green}消耗{green}止痛藥{green}並自救"
+		"chi"		"{green}消耗{green}止痛药{green}並自救"
+		"de"		"{green}um selbst aufzustehen, mittels {green}Schmerzmittel"
+	}
+	"Hint_Adrenaline"
+	{
+		"en"		"{green}to stand back up by yourself using {green}Adrenaline"
+		"ru"		"{green}чтобы подняться с помощью {green}адреналина"
+		"pt"		"{green}está se levantando usando {green}Adrenalina"
+		"zho"		"{green}消耗{green}腎上腺素{green}並自救"
+		"chi"		"{green}消耗{green}肾上腺素{green}並自救"
+		"de"		"{green}um selbst aufzustehen, mittels{green}Adrenalin"
+	}
+	"Hint_Medkit"
+	{
+		"en"		"{green}to stand back up by yourself using {green}Medkit"
+		"ru"		"{green}чтобы подняться с помощью {green}аптечки"
+		"pt"		"{green}está se levantando usando {green}Kit de Primeiros Socorros"
+		"zho"		"{green}消耗{green}治療包{green}並自救"
+		"chi"		"{green}消耗{green}医疗包{green}並自救"
+		"de"		"{green}um selbst aufzustehen, mittels{green}Erste-Hilfe-Kasten"
+	}
+	"Dummy"
+	{
+		"en"		"" // dummy. Don't touch!
+	}
+}

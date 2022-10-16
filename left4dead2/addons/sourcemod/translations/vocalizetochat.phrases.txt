@@ -1,0 +1,342 @@
+"Phrases"
+{
+	"(Voice)"
+	{
+		"en"		"(Voice)"
+	}
+	
+	"playeralsowarnsmoker"
+	{
+		"en"		"Smoker!"
+	}
+	
+	"playeralsowarnboomer"
+	{
+		"en"		"Boomer!"
+	}
+	
+	"playeralsowarnhunter"
+	{
+		"en"		"Hunter!"
+	}
+	
+	"playeralsowarnspitter"
+	{
+		"en"		"Spitter!"
+	}
+	
+	"playeralsowarnjockey"
+	{
+		"en"		"Jockey!"
+	}
+	
+	"playeralsowarncharger"
+	{
+		"en"		"Charger!"
+	}
+	
+	"playeralsowarnwitch"
+	{
+		"en"		"Witch!"
+	}
+	
+	"playeralsowarntank"
+	{
+		"en"		"Tank!"
+	}
+	
+	"playeraskready"
+	{
+		"en"		"Ready?"
+	}
+	
+	"playerno"
+	{
+		"en"		"No."
+	}
+	
+	"playernegative"
+	{
+		"en"		"Damn."
+	}
+	
+	"playerhurrah"
+	{
+		"en"		"Hell yeah."
+	}
+	
+	"playersorry"
+	{
+		"en"		"Sorry."
+	}
+	
+	"playeryes"
+	{
+		"en"		"Yes."
+	}
+	
+	"playerthanks"
+	{
+		"en"		"Thanks!"
+	}
+	
+	"playermoveon"
+	{
+		"en"		"Let's Go."
+	}
+	
+	"playerleadon"
+	{
+		"en"		"Lead On."
+	}
+	
+	"playerhurryup"
+	{
+		"en"		"Hurry Up!"
+	}
+	
+	"playeryellrun"
+	{
+		"en"		"RUN!"
+	}
+	
+	"playernicejob"
+	{
+		"en"		"Nice Job!"
+	}
+	
+	"playerwaithere"
+	{
+		"en"		"Wait Here!"
+	}
+	
+	"playerthisway"
+	{
+		"en"		"This way."
+	}
+	
+	"playerwarncareful"
+	{
+		"en"		"Be Careful."
+	}
+	
+	"playerimwithyou"
+	{
+		"en"		"I'm With You."
+	}
+	
+	"playercoverme"
+	{
+		"en"		"Cover me!"
+	}
+	
+	"playerhelp"
+	{
+		"en"		"Help!"
+	}
+	
+	"playerdeath"
+	{
+		"en"		"AaAaaaaAAaaAaaAaa."
+	}
+	
+	"playerareaclear"
+	{
+		"en"		"Clear!"
+	}
+	
+	"c7m1opentankdoorspeak"
+	{
+		"en"		"Tank here."
+	}
+	
+	"playerlookout"
+	{
+		"en"		"Watch out!"
+	}
+	
+	"playerstaytogether"
+	{
+		"en"		"Stay Together!"
+	}
+	
+	"playerfollowme"
+	{
+		"en"		"Follow me."
+	}
+	
+	"emphaticarriverun"
+	{
+		"en"		"Run!"
+	}
+	
+	"playerwatchoutbehind"
+	{
+		"en"		"Behind us!"
+	}
+	
+	"playertotherescue"
+	{
+		"en"		"I'm coming!"
+	}
+	
+	"playeralertgiveitem"
+	{
+		"en"		"Take this."
+	}
+	
+	"playerlaugh"
+	{
+		"en"		"Hahaha."
+	}
+	
+	"playertaunt"
+	{
+		"en"		"Bring it on!"
+	}
+	
+	"playeryouarewelcome"
+	{
+		"en"		"You're welcome."
+	}
+	
+	"playerincoming"
+	{
+		"en"		"Incoming!"
+	}
+	
+	"playeremphaticgo"
+	{
+		"en"		"GO!"
+	}
+	
+	"useadrenaline"
+	{
+		"en"		"Brrrrr!"
+	}
+	
+	"playerlostcall"
+	{
+		"en"		"Where is everyone?"
+	}
+	
+	"playerfriendlyfire"
+	{
+		"en"		"Ow! Watch it."
+	}
+	
+	"askforhealth2"
+	{
+		"en"		"I need healing."
+	}
+	
+	"revivefrienddown"
+	{
+		"en"		"I'll be fine."
+	}
+	
+	"relaxedsigh"
+	{
+		"en"		"Better now."
+	}
+	
+	"playerkillthatlight"
+	{
+		"en"		"Lights off."
+	}
+	
+	"playerspototherweapon"
+	{
+		"en"		"Weapons here."
+	}
+	
+	"playerhealingother"
+	{
+		"en"		"Let me heal you."
+	}
+	
+	"witchgettingangry"
+	{
+		"en"		"Back up from the Witch."
+	}
+	
+	"c2m1falling"
+	{
+		"en"		"Woah!"
+	}
+	
+	"revivedbydefibrillator"
+	{
+		"en"		"Gasp!"
+	}
+	
+	"playerledgehangstart"
+	{
+		"en"		"I slipped!"
+	}
+	
+	"playerledgehangmiddle"
+	{
+		"en"		"I'm hanging here!"
+	}
+	
+	"playervomitinface"
+	{
+		"en"		"I'm blind!"
+	}
+	
+	"callforrescue"
+	{
+		"en"		"Get me out!"
+	}
+	
+	"playerrevivefriendcritical"
+	{
+		"en"		"You're gonna need first aid."
+	}
+	
+	"playerrevivefriend"
+	{
+		"en"		"You'll be okay."
+	}
+	
+	"playerledgehangend"
+	{
+		"en"		"I'm about to fall!"
+	}
+	
+	"playerchoke"
+	{
+		"en"		"HAAK!"
+	}
+	
+	"playertonguepullstart"
+	{
+		"en"		"I'm getting pulled!"
+	}
+	
+	"playeranswerlostcall"
+	{
+		"en"		"I'm here."
+	}
+	
+	"screamwhilepounced"
+	{
+		"en"		"I'm pounced!"
+	}
+	
+	"playergroundpoundedbytank"
+	{
+		"en"		"He's crushing me!"
+	}
+	
+	"responsesoftdispleasureswear"
+	{
+		"en"		"Ugh."
+	}
+	
+	"playerbackup"
+	{
+		"en"		"Back up!"
+	}
+}

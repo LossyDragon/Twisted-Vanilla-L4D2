@@ -1,0 +1,36 @@
+"Games"
+{
+	"left4dead2"
+	{
+		"Addresses"
+		{
+			"Cbuf_AddText_Fix"
+			{
+				"linux"
+				{
+					"signature"	"Cbuf_AddText_Sig"
+				}
+			}
+		}
+		"Offsets"
+		{
+			"Cbuf_AddText_Offset"
+			{
+				"linux"		"167"
+			}
+		}
+		"Signatures"
+		{
+			/*
+			*  int __cdecl sub_34B2C0(int, void *src, int)
+			*/
+			"Cbuf_AddText_Sig"
+			{
+				"library"		"engine"
+				"linux"		"\x55\x89\x2A\x83\x2A\x2A\xE8\x2A\x2A\x2A\x2A\x89\x2A\xA1\x2A\x2A\x2A\x2A\x39\x2A\x74\x2A\x31\x2A\xF0\x2A\x2A\x2A\x2A\x2A\x2A\x2A\x75\x2A\xA1\x2A\x2A\x2A\x2A\x83\x2A\x01\xA3\x2A\x2A\x2A\x2A\x8B\x2A\x2A\x89\x2A\x2A\x2A\x8B\x2A\x2A\x89\x2A\x2A\x2A\x69"
+				/* 55 89 ? 83 ? ? E8 ? ? ? ? 89 ? A1 ? ? ? ? 39 ? 74 ? 31 ? F0 ? ? ? ? ? ? ? 75 ? A1 ? ? ? ? 83 ? 01 A3 ? ? ? ? 8B ? ? 89 ? ? ? 8B ? ? 89 ? ? ? 69 */
+				/* Search: "Cbuf_AddText: buffer overflow\n" */
+			}
+		}
+	}
+}

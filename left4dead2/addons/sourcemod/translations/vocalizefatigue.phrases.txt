@@ -1,0 +1,39 @@
+﻿"Phrases"
+{
+	"Vocalize Gagged Target"
+	{
+		"#format"		"{1:t}"
+		"en"			"vocalize gagged {1}."
+	}
+
+	"Vocalize Ungagged Target"
+	{
+		"#format"		"{1:t}"
+		"en"			"vocalize ungagged {1}."
+	}
+
+	"Have To Be Alive"
+	{
+		"en"			"Have to be alive to use this command."
+	}
+
+	"Have To Be Survivor"
+	{
+		"en"			"Have to be on the Survivor team to use this command."
+	}
+
+	"Invalid Scene"
+	{
+		"en"			"Invalid scene."
+	}
+
+	"Scene Not Found"
+	{
+		"en"			"Scene not found."
+	}
+
+	"Scene Name"
+	{
+		"en"			"scene name"
+	}
+}

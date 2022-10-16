@@ -1,0 +1,19 @@
+"Phrases"
+{
+	"move"
+	{
+		"en"	"[MMG] You can move the minigun by aiming the minigun and pressing Shift + Mouse Right Click button together."
+		"ru"	"[MMG] Вы можете переместить Миниган Наведите на него прицел и Нажмите Shift + Mouse Right Click Кнопки Вместе."
+		"pt"	"[MMG] Você pode mover a metralhadora se aproximando e pressionando o botão Shift + Botão direito do mouse juntos."
+		"es"	"[MMG] Puedes mover la ametralladora acercándote y presionando el botón Shift + Botón derecho del mouse juntos."
+	}
+	
+	"stayaway"
+	{
+		"en"	"[MMG] You are too close to another Мachine Gun, stay away from it to deploy your machine gun (%f/%f)."
+		"ru"	"[MMG] Вы слишком близко к другому Минигану, отойдите по дальше чтобы развернуть ваше орудие (%f/%f)."
+		"pt"	"[MMG] Você está muito perto de outra metralhadora, fique longe dela para implantar sua metralhadora (%f/%f)."
+		"es"	"[MMG] Estás demasiado cerca de otra ametralladora, aléjate de ella para desplegarla (%f/%f)."
+	}
+
+}

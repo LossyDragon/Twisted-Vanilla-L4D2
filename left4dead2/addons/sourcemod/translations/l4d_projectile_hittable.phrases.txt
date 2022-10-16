@@ -1,0 +1,66 @@
+/*
+	******************************************************************************************************************************************************
+
+	You can display phrases in chat with color using any of the methods below:
+
+	Using color codes:
+		•  // Default (use instead of \x01), Alt + 01 Keyboard Shortcut
+		•  // Light Green (use instead of \x03), Alt + 03 Keyboard Shortcut
+		•  // Orange (use instead of \x04), Alt + 04 Keyboard Shortcut
+		•  // Olive (use instead of \x05), Alt + 05 Keyboard Shortcut
+
+	or
+
+	Using color tags:
+		• {default} // Default (use instead of \x01)
+		• {lightgreen} // Light Green (use instead of \x03)
+		• {orange} // Orange (use instead of \x04)
+		• {olive} // Green (use instead of \x05)
+
+	******************************************************************************************************************************************************
+*/
+
+"Phrases"
+{
+
+	"Shot a molotov"
+	{
+		"#format"		"{1:N}"
+		"en"			"{orange}{1} {lightgreen}has exploded a {olive}molotov{lightgreen}!"
+		"es"			"{orange}{1} {lightgreen}explotó un {olive}molotov{lightgreen}!"
+		"hu"			"{orange}{1} {lightgreen}felrobbant egy {olive}molotovot{lightgreen}!"
+		"pt"			"{orange}{1} {lightgreen}explodiu um {olive}molotov{lightgreen}!"
+		"pt_p"			"{orange}{1} {lightgreen}explodiu um {olive}molotov{lightgreen}!"
+	}
+
+	"Shot a pipe bomb"
+	{
+		"#format"		"{1:N}"
+		"en"			"{orange}{1} {lightgreen}has exploded a {olive}pipe bomb{lightgreen}!"
+		"es"			"{orange}{1} {lightgreen}explotó una {olive}bomba casera{lightgreen}!"
+		"hu"			"{orange}{1} {lightgreen}felrobbant egy {olive}csőbombát{lightgreen}!"
+		"pt"			"{orange}{1} {lightgreen}explodiu uma {olive}pipe bomb{lightgreen}!"
+		"pt_p"			"{orange}{1} {lightgreen}explodiu uma {olive}pipe bomb{lightgreen}!"
+	}
+
+	"Shot a vomit jar"
+	{
+		"#format"		"{1:N}"
+		"en"			"{orange}{1} {lightgreen}has exploded a {olive}vomit jar{lightgreen}!"
+		"es"			"{orange}{1} {lightgreen}explotó una {olive}vomitona{lightgreen}!"
+		"hu"			"{orange}{1} {lightgreen}felrobbant egy {olive}epetartályt{lightgreen}!"
+		"pt"			"{orange}{1} {lightgreen}explodiu uma {olive}bile{lightgreen}!"
+		"pt_p"			"{orange}{1} {lightgreen}explodiu uma {olive}bile{lightgreen}!"
+	}
+	
+	"Shot a grenade"
+	{
+		"#format"		"{1:N}"
+		"en"			"{orange}{1} {lightgreen}has exploded a {olive}grenade{lightgreen}!"
+		"es"			"{orange}{1} {lightgreen}explotó una {olive}granada{lightgreen}!"
+		"hu"			"{orange}{1} {lightgreen}felrobbant egy {olive}gránát{lightgreen}!"
+		"pt"			"{orange}{1} {lightgreen}explodiu uma {olive}granada{lightgreen}!"
+		"pt_p"			"{orange}{1} {lightgreen}explodiu uma {olive}granada{lightgreen}!"
+	}
+
+}

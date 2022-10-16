@@ -1,0 +1,67 @@
+"Phrases"
+{
+	"Vocalize gag/mute player"
+	{
+		"en"			"Vocalize gag/mute player"
+	}
+	
+	"Choose Type"
+	{
+		"en"			"Choose Type"
+	}
+	
+	"Vocalize gagged target"
+	{
+		"#format"		"{1:t}"
+		"en"			"Vocalize gagged {1}."
+	}
+	
+	"Vocalize ungagged target"
+	{
+		"#format"		"{1:t}"
+		"en"			"Vocalize ungagged {1}."
+	}
+	
+	"Vocalize muted target"
+	{
+		"#format"		"{1:t}"
+		"en"			"Vocalize muted {1}."
+	}
+	
+	"Vocalize unmuted target"
+	{
+		"#format"		"{1:t}"
+		"en"			"Vocalize unmuted {1}."
+	}
+	
+	"Vocalize mute player"
+	{
+		"en"			"Vocalize mute player"
+	}
+	
+	"Vocalize unmute player"
+	{
+		"en"			"Vocalize unmute player"
+	}
+	
+	"Vocalize gag player"
+	{
+		"en"			"Vocalize gag player"
+	}
+	
+	"Vocalize ungag player"
+	{
+		"en"			"Vocalize ungag player"
+	}
+	
+	"Missing vocalize string or scene file"
+	{
+		"en"			"Missing vocalize string or scene file."
+	}
+	
+	"Player performing scene"
+	{
+		"#format"		"{1:t}"
+		"en"			"Forced {1} to vocalize."
+	}
+}

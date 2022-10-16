@@ -1,0 +1,48 @@
+/*
+	******************************************************************************************************************************************************
+
+	You can display phrases in chat with color using any of the methods below:
+
+	Using color codes:
+		•  // Default (use instead of \x01), Alt + 01 Keyboard Shortcut
+		•  // Light Green (use instead of \x03), Alt + 03 Keyboard Shortcut
+		•  // Orange (use instead of \x04), Alt + 04 Keyboard Shortcut
+		•  // Olive (use instead of \x05), Alt + 05 Keyboard Shortcut
+
+	or
+
+	Using color tags:
+		• {default} // Default (use instead of \x01)
+		• {lightgreen} // Light Green (use instead of \x03)
+		• {orange} // Orange (use instead of \x04)
+		• {olive} // Green (use instead of \x05)
+
+	******************************************************************************************************************************************************
+*/
+
+"Phrases"
+{
+
+	"Equipped a gnome"
+	{
+		"#format"		"{1:N}"
+		"en"			"{orange}{1} {lightgreen}equipped a {olive}gnome{lightgreen}!"
+		"es"			"{orange}{1} {lightgreen}equipó un {olive}gnomo{lightgreen}!"
+		"pt"			"{orange}{1} {lightgreen}equipou um {olive}gnomo{lightgreen}!"
+		"pt_b"			"{orange}{1} {lightgreen}equipou um {olive}gnomo{lightgreen}!"
+		"chi"			"{orange}{1} {lightgreen}装备了 {olive}小侏儒{lightgreen}!"
+		"zho"			"{orange}{1} {lightgreen}裝備了 {olive}小侏儒{lightgreen}!"
+	}
+
+	"Equipped a cola"
+	{
+		"#format"		"{1:N}"
+		"en"			"{orange}{1} {lightgreen}equipped a {olive}cola{lightgreen}!"
+		"es"			"{orange}{1} {lightgreen}equipó una {olive}caja de coca-cola{lightgreen}!"
+		"pt"			"{orange}{1} {lightgreen}equipou uma {olive}caixa de coca-cola{lightgreen}!"
+		"pt_b"			"{orange}{1} {lightgreen}equipou uma {olive}caixa de coca-cola{lightgreen}!"
+		"chi"			"{orange}{1} {lightgreen}装备了 {olive}可乐瓶{lightgreen}!"
+		"zho"			"{orange}{1} {lightgreen}裝備了 {olive}可樂瓶{lightgreen}!"
+	}
+
+}

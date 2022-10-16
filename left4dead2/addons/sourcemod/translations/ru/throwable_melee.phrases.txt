@@ -1,0 +1,92 @@
+"Phrases"
+{
+	"Melee_Equip"
+	{
+		"ru"			"{WHITE}Вы можете бросить оружие ближнего боя, нажав кнопку {ORANGE}УВЕЛИЧИТЬ."
+	}
+	"Melee_Hit_Survivor"
+	{
+		"#format"		"{1:s},{2:s},{3:s}"
+		"ru"			"{ORANGE}{1} {WHITE}бросил {LIGHTGREEN}{2} {WHITE}в {ORANGE}{3}{WHITE}."
+	}
+	"Melee_Hit_Special"
+	{
+		"#format"		"{1:s},{2:s},{3:s}"
+		"ru"			"{ORANGE}{1} {WHITE}бросил {LIGHTGREEN}{2} {WHITE}и убил {ORANGE}{3}{WHITE}."
+	}
+	"Melee_Hit_Common"
+	{
+		"#format"		"{1:s},{2:s},{3:s}"
+		"ru"			"{ORANGE}{1} {WHITE}бросил {LIGHTGREEN}{2} {WHITE}и убил {ORANGE}{3}{WHITE}."
+	}
+
+	"infected"
+	{
+		"ru"			"Зараженный"
+	}
+	"witch"
+	{
+		"ru"			"Ведьма"
+	}
+
+	"baseball_bat"
+	{
+		"ru"			"Бейсбольная бита"
+	}
+	"cricket_bat"
+	{
+		"ru"			"Бита для крикета"
+	}
+	"crowbar"
+	{
+		"ru"			"Лом"
+	}
+	"electric_guitar"
+	{
+		"ru"			"Электрогитара"
+	}
+	"fireaxe"
+	{
+		"ru"			"Пожарный топор"
+	}
+	"frying_pan"
+	{
+		"ru"			"Сковорода"
+	}
+	"golfclub"
+	{
+		"ru"			"Клюшка для гольфа"
+	}
+	"katana"
+	{
+		"ru"			"Катана"
+	}
+	"knife"
+	{
+		"ru"			"Нож"
+	}
+	"machete"
+	{
+		"ru"			"Мачете"
+	}
+	"tonfa"
+	{
+		"ru"			"Тонфа"
+	}
+	"pitchfork"
+	{
+		"ru"			"Вилы"
+	}
+	"shovel"
+	{
+		"ru"			"Лопата"
+	}
+	"riot_shield"
+	{
+		"ru"			"Щит"
+	}
+	"generic"
+	{
+		"ru"			"Оружие ближнего боя"
+	}
+}

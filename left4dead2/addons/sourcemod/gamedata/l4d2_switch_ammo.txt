@@ -1,0 +1,14 @@
+"Games"
+{
+	"left4dead2"
+	{
+		"Offsets"
+		{
+			"CTerrorGun::Reload"
+			{
+				"windows"	"281"
+				"linux"		"282"
+			}
+		}
+	}
+}

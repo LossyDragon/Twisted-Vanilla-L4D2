@@ -1,0 +1,31 @@
+"Phrases"
+{
+	"Used Remain"
+	{
+		"#format"	"{1:.1f},{2:t}"
+		"en"		"{cyan}You Feel Powerful from {2} {orange}(+{1}s)"		
+		"zho"		"{cyan}{2}你感觉自己又行了 {orange}(+{1}s)"
+		"chi"		"{cyan}{2}你感觉自己又行了 {orange}(+{1}s)"
+	}
+	"Used"
+	{
+		"#format"	"{1:t}"
+		"en"		"{cyan}You Feel Powerful from {1}"		
+		"zho"		"{cyan}{1}你感觉自己又行了"
+		"chi"		"{cyan}{1}你感觉自己又行了"
+	}
+
+	"Adrenaline"
+	{
+		"en"	"Inject Adrenaline"
+		"zho"	"打了针"
+		"chi"	"打了针"
+	}
+
+	"Pills"
+	{
+		"en"	"Drug Pills"
+		"zho"	"磕了药"
+		"chi"	"磕了药"
+	}
+}

@@ -1,0 +1,12 @@
+"Phrases"
+{
+	"Cannot Use Medkit"
+	{
+		"en"	"You cannot use a medkit due to your good health status"
+	}
+	"Cannot Use Medkit Target"
+	{
+		"#format" "{1:s}"
+		"en" 	"You cannot use the medkit on {1} due to their good health status"
+	}
+}

@@ -1,0 +1,43 @@
+// {white}
+// {cyan}
+// {orange}
+// {green}
+
+"Phrases"
+{
+	"GetOffInfected"
+	{
+		"en"		"{orange}Get that Infected off you first"
+		"ru"		"{orange}Сперва снимите заражённого с себя"
+	}
+	"AlreadyReviving"
+	{
+		"en"		"{orange}You're being revived already"
+		"ru"		"{orange}Вас уже поднимают"
+	}
+	"Press"
+	{
+		"en"		"{green}Press"
+		"ru"		"{green}Нажми"
+	}
+	"IN_JUMP"
+	{
+		"en"		"{orange}(JUMP)"
+		"ru"		"{orange}(ПРЫЖОК)"
+	}
+	"IN_DUCK"
+	{
+		"en"		"{orange}(CROUCH)"
+		"ru"		"{orange}(ПРИСЕСТЬ)"
+	}
+	"IN_USE"
+	{
+		"en"		"{orange}(USE)"
+		"ru"		"{orange}(ИСПОЛЬЗОВАТЬ)"
+	}
+	"Hint_Release"
+	{
+		"en"		"{green}to release from the ledge"
+		"ru"		"{green}для спрыга с уступа"
+	}
+}

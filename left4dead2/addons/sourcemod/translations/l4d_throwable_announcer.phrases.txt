@@ -1,0 +1,56 @@
+/*
+	******************************************************************************************************************************************************
+
+	You can display phrases in chat with color using any of the methods below:
+
+	Using color codes:
+		•  // Default (use instead of \x01), Alt + 01 Keyboard Shortcut
+		•  // Light Green (use instead of \x03), Alt + 03 Keyboard Shortcut
+		•  // Orange (use instead of \x04), Alt + 04 Keyboard Shortcut
+		•  // Olive (use instead of \x05), Alt + 05 Keyboard Shortcut
+
+	or
+
+	Using color tags:
+		• {default} // Default (use instead of \x01)
+		• {lightgreen} // Light Green (use instead of \x03)
+		• {orange} // Orange (use instead of \x04)
+		• {olive} // Green (use instead of \x05)
+
+	******************************************************************************************************************************************************
+*/
+
+"Phrases"
+{
+
+	"Thrown a molotov"
+	{
+		"#format"		"{1:N}"
+		"en"			"{orange}{1} {lightgreen}has thrown a {olive}molotov{lightgreen}!"
+		"es"			"{orange}{1} {lightgreen}lanzó un {olive}molotov{lightgreen}!"
+		"hu"			"{orange}{1} {lightgreen}dobott egy {olive}molotovot{lightgreen}!"
+		"pt"			"{orange}{1} {lightgreen}jogou um {olive}molotov{lightgreen}!"
+		"pt_p"			"{orange}{1} {lightgreen}jogou um {olive}molotov{lightgreen}!"
+	}
+
+	"Thrown a pipe bomb"
+	{
+		"#format"		"{1:N}"
+		"en"			"{orange}{1} {lightgreen}has thrown a {olive}pipe bomb{lightgreen}!"
+		"es"			"{orange}{1} {lightgreen}lanzó una {olive}bomba casera{lightgreen}!"
+		"hu"			"{orange}{1} {lightgreen}dobott egy {olive}csőbombát{lightgreen}!"
+		"pt"			"{orange}{1} {lightgreen}jogou uma {olive}pipe bomb{lightgreen}!"
+		"pt_p"			"{orange}{1} {lightgreen}jogou uma {olive}pipe bomb{lightgreen}!"
+	}
+
+	"Thrown a vomit jar"
+	{
+		"#format"		"{1:N}"
+		"en"			"{orange}{1} {lightgreen}has thrown a {olive}vomit jar{lightgreen}!"
+		"es"			"{orange}{1} {lightgreen}lanzó una {olive}vomitona{lightgreen}!"
+		"hu"			"{orange}{1} {lightgreen}dobott egy {olive}epetartályt{lightgreen}!"
+		"pt"			"{orange}{1} {lightgreen}jogou uma {olive}bile{lightgreen}!"
+		"pt_p"			"{orange}{1} {lightgreen}jogou uma {olive}bile{lightgreen}!"
+	}
+
+}

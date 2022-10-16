@@ -1,0 +1,41 @@
+"Games"
+{
+	"left4dead2"
+	{
+		"Addresses"
+		{
+			"TheZombieManager"
+			{
+				"signature" "TheZombieManager"
+				"read" "0"
+			}
+		}
+		"Signatures"
+		{
+			"TheZombieManager"
+			{
+				"linux"		"@TheZombieManager"
+			}
+			"GetMaxFlowDistance"
+			{
+				"linux"		"@_ZL25Script_GetMaxFlowDistancev"
+			}
+			"CTerrorGameRules::IsInIntro"
+			{
+				"linux"		"@_ZN16CTerrorGameRules9IsInIntroEv"
+			}
+			"ZombieManager::GetRandomPZSpawnPosition"
+			{
+				"linux"		"@_ZNK13ZombieManager24GetRandomPZSpawnPositionE15ZombieClassTypeiP13CTerrorPlayerP6Vector"
+			}
+			"ZombieManager::SpawnWitch"
+			{
+				"linux"		"@_ZN13ZombieManager10SpawnWitchERK6VectorRK6QAngle"
+			}
+			"ZombieManager::SpawnTank"
+			{
+				"linux"		"@_ZN13ZombieManager9SpawnTankERK6VectorRK6QAngle"
+			}
+		}
+	}
+}

@@ -1,0 +1,7 @@
+"Phrases"
+{
+	"About_Switch_Ammo"
+	{
+		"zho"		"{white}按 {orange}Shift {white}+ {orange}RELOAD(換彈夾) {white}鍵在主要彈藥和燃燒及高爆彈之間切換使用"
+	}
+}
