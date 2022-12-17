@@ -1,0 +1,26 @@
+// support {white} {default} or {cyan} {lightgreen} or {orange} {olive} or {green}
+
+"Phrases"
+{
+	"Ammo Pile Remain"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"{cyan}Ammo Pile Remaining: {orange}{1}%"
+		"chi"		"{cyan}子弹堆剩余：{orange}{1}%"
+		"zho"		"{cyan}子彈堆剩餘：{orange}{1}%"
+	}
+
+	"Ammo Pile Used"
+	{
+		"en"		"{cyan}Ammo Pile Used Up"
+		"chi"		"{cyan}子弹堆已无剩余"
+		"zho"		"{cyan}子彈堆已無剩餘"
+	}
+	"Taken Ammo"
+	{
+		"#format"	"{1:d}"
+		"en"		"{cyan} Taken {orange}{1}{cyan} Ammos"
+		"chi"		"{cyan} ({orange}+{1}{cyan} 子弹)"
+		"zho"		"{cyan} ({orange}+{1}{cyan} 子彈)"
+	}
+}
