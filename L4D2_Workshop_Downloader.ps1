@@ -80,6 +80,7 @@ foreach ($fileUrl in $jsonResponse.response.publishedfiledetails) {
 	
 	# Slow as balls! Usually with Campaigns
 	Write-Host "Downloading: $title"
+	$ProgressPreference = "SilentlyContinue" # Should speed up download progress
 	Invoke-WebRequest -Uri $file -OutFile $path\$filename
 }
 
