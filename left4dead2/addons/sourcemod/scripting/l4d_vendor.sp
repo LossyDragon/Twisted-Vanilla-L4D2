@@ -1,6 +1,6 @@
 /*
 *	Health Vending Machines
-*	Copyright (C) 2020 Silvers
+*	Copyright (C) 2022 Silvers
 *
 *	This program is free software: you can redistribute it and/or modify
 *	it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
 
 
 
-#define PLUGIN_VERSION 		"1.9"
+#define PLUGIN_VERSION 		"1.11"
 
 /*======================================================================================
 	Plugin Info:
@@ -31,6 +31,12 @@
 
 ========================================================================================
 	Change Log:
+
+1.11 (11-Dec-2022)
+	- Changes to fix compile warnings on SourceMod 1.11.
+
+1.10 (10-Apr-2021)
+	- Increased the interaction range of Vending Machines. This allows positioning over a maps vendors. Thanks to "Shao" for reporting.
 
 1.9 (30-Sep-2020)
 	- Fixed compile errors on SM 1.11.
@@ -268,17 +274,17 @@ public void OnConfigsExecuted()
 	IsAllowed();
 }
 
-public void ConVarChanged_Allow(Handle convar, const char[] oldValue, const char[] newValue)
+void ConVarChanged_Allow(Handle convar, const char[] oldValue, const char[] newValue)
 {
 	IsAllowed();
 }
 
-public void ConVarChanged_Cvars(Handle convar, const char[] oldValue, const char[] newValue)
+void ConVarChanged_Cvars(Handle convar, const char[] oldValue, const char[] newValue)
 {
 	GetCvars();
 }
 
-public void ConVarChanged_Glow(Handle convar, const char[] oldValue, const char[] newValue)
+void ConVarChanged_Glow(Handle convar, const char[] oldValue, const char[] newValue)
 {
 	g_iCvarGlow = g_hCvarGlow.IntValue;
 	g_iCvarGlowCol = GetColor(g_hCvarGlowCol);
@@ -411,7 +417,7 @@ bool IsAllowedGameMode()
 	return true;
 }
 
-public void OnGamemode(const char[] output, int caller, int activator, float delay)
+void OnGamemode(const char[] output, int caller, int activator, float delay)
 {
 	if( strcmp(output, "OnCoop") == 0 )
 		g_iCurrentMode = 1;
@@ -428,15 +434,16 @@ public void OnGamemode(const char[] output, int caller, int activator, float del
 // ====================================================================================================
 //					EVENTS
 // ====================================================================================================
-public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
+void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 	CreateTimer(0.4, TimerStart, _, TIMER_FLAG_NO_MAPCHANGE);
 }
 
-public Action TimerStart(Handle timer)
+Action TimerStart(Handle timer)
 {
 	ResetPlugin();
 	LoadVendors();
+	return Plugin_Continue;
 }
 
 
@@ -642,8 +649,8 @@ void CreateVendor(const float vOrigin[3], const float vAngles[3], int iType, int
 
 		float vMins[3];
 		float vMaxs[3];
-		vMins = view_as<float>({-50.0, -50.0, -30.0});
-		vMaxs = view_as<float>({50.0, 50.0, 30.0});
+		vMins = view_as<float>({-15.0, -15.0, -30.0});
+		vMaxs = view_as<float>({15.0, 15.0, 30.0});
 		SetEntPropVector(button, Prop_Send, "m_vecMins", vMins);
 		SetEntPropVector(button, Prop_Send, "m_vecMaxs", vMaxs);
 	}
@@ -666,7 +673,7 @@ void CreateVendor(const float vOrigin[3], const float vAngles[3], int iType, int
 // ====================================================================================================
 //					ON PRESSED
 // ====================================================================================================
-public void OnPressed(const char[] output, int caller, int client, float delay)
+void OnPressed(const char[] output, int caller, int client, float delay)
 {
 	int entity = EntIndexToEntRef(caller);
 	for( int i = 0; i < MAX_VENDORS; i++ )
@@ -691,12 +698,12 @@ public void OnPressed(const char[] output, int caller, int client, float delay)
 	}
 }
 
-public void OnUnpressed(const char[] output, int caller, int client, float delay)
+void OnUnpressed(const char[] output, int caller, int client, float delay)
 {
 	StopSound(caller, SNDCHAN_AUTO, SOUND_WATER);
 }
 
-public void OnTimeUp(const char[] output, int caller, int client, float delay)
+void OnTimeUp(const char[] output, int caller, int client, float delay)
 {
 	caller = EntIndexToEntRef(caller);
 
@@ -727,7 +734,7 @@ public void OnTimeUp(const char[] output, int caller, int client, float delay)
 			if( kill )
 			{
 				AcceptEntityInput(entity, "StopGlowing");
-				AcceptEntityInput(caller, "Kill");
+				RemoveEntity(caller);
 
 				StopSound(entity, SNDCHAN_AUTO, SOUND_VENDOR1);
 				StopSound(entity, SNDCHAN_AUTO, SOUND_VENDOR2);
@@ -865,7 +872,7 @@ void VocalizeScene(int client)
 // ====================================================================================================
 //					sm_vendor
 // ====================================================================================================
-public Action CmdVendorTemp(int client, int args)
+Action CmdVendorTemp(int client, int args)
 {
 	if( !client )
 	{
@@ -900,7 +907,7 @@ public Action CmdVendorTemp(int client, int args)
 // ====================================================================================================
 //					sm_vendorsave
 // ====================================================================================================
-public Action CmdVendorSave(int client, int args)
+Action CmdVendorSave(int client, int args)
 {
 	if( !client )
 	{
@@ -1003,7 +1010,7 @@ public Action CmdVendorSave(int client, int args)
 // ====================================================================================================
 //					sm_vendordel
 // ====================================================================================================
-public Action CmdVendorDelete(int client, int args)
+Action CmdVendorDelete(int client, int args)
 {
 	if( !g_bCvarAllow )
 	{
@@ -1132,7 +1139,7 @@ public Action CmdVendorDelete(int client, int args)
 // ====================================================================================================
 //					sm_vendorwipe
 // ====================================================================================================
-public Action CmdVendorWipe(int client, int args)
+Action CmdVendorWipe(int client, int args)
 {
 	if( !client )
 	{
@@ -1183,7 +1190,7 @@ public Action CmdVendorWipe(int client, int args)
 // ====================================================================================================
 //					sm_vendorglow / sm_vendorlist
 // ====================================================================================================
-public Action CmdVendorGlow(int client, int args)
+Action CmdVendorGlow(int client, int args)
 {
 	g_bGlow = !g_bGlow;
 	PrintToChat(client, "%sGlow has been turned %s", CHAT_TAG, g_bGlow ? "on" : "off");
@@ -1212,7 +1219,7 @@ void VendorGlow(int glow)
 	}
 }
 
-public Action CmdVendorList(int client, int args)
+Action CmdVendorList(int client, int args)
 {
 	float vPos[3];
 	int count;
@@ -1232,7 +1239,7 @@ public Action CmdVendorList(int client, int args)
 // ====================================================================================================
 //					MENU ANGLE
 // ====================================================================================================
-public Action CmdVendorAng(int client, int args)
+Action CmdVendorAng(int client, int args)
 {
 	ShowMenuAng(client);
 	return Plugin_Handled;
@@ -1244,7 +1251,7 @@ void ShowMenuAng(int client)
 	g_hMenuAng.Display(client, MENU_TIME_FOREVER);
 }
 
-public int AngMenuHandler(Menu menu, MenuAction action, int client, int index)
+int AngMenuHandler(Menu menu, MenuAction action, int client, int index)
 {
 	if( action == MenuAction_Select )
 	{
@@ -1254,6 +1261,8 @@ public int AngMenuHandler(Menu menu, MenuAction action, int client, int index)
 			SetAngle(client, index);
 		ShowMenuAng(client);
 	}
+
+	return 0;
 }
 
 void SetAngle(int client, int index)
@@ -1295,7 +1304,7 @@ void SetAngle(int client, int index)
 // ====================================================================================================
 //					MENU ORIGIN
 // ====================================================================================================
-public Action CmdVendorPos(int client, int args)
+Action CmdVendorPos(int client, int args)
 {
 	ShowMenuPos(client);
 	return Plugin_Handled;
@@ -1307,7 +1316,7 @@ void ShowMenuPos(int client)
 	g_hMenuPos.Display(client, MENU_TIME_FOREVER);
 }
 
-public int PosMenuHandler(Menu menu, MenuAction action, int client, int index)
+int PosMenuHandler(Menu menu, MenuAction action, int client, int index)
 {
 	if( action == MenuAction_Select )
 	{
@@ -1317,6 +1326,8 @@ public int PosMenuHandler(Menu menu, MenuAction action, int client, int index)
 			SetOrigin(client, index);
 		ShowMenuPos(client);
 	}
+
+	return 0;
 }
 
 void SetOrigin(int client, int index)
@@ -1492,7 +1503,7 @@ void RemoveVendor(int index)
 		StopSound(entity, SNDCHAN_AUTO, SOUND_WATER);
 
 		if( IsValidEntRef(entity) )
-			AcceptEntityInput(entity, "kill");
+			RemoveEntity(entity);
 	}
 
 	g_iVendors[i][2] = 0;
@@ -1568,7 +1579,7 @@ bool SetTeleportEndPoint(int client, float vPos[3], float vAng[3], int iType)
 	return true;
 }
 
-public bool _TraceFilter(int entity, int contentsMask)
+bool _TraceFilter(int entity, int contentsMask)
 {
 	return entity > MaxClients || !entity;
 }

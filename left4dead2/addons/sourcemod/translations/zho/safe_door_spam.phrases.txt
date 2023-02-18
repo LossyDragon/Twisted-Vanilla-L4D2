@@ -1,0 +1,22 @@
+﻿"Phrases"
+{
+	"Door_Open"
+	{
+		"zho"		"{olive}[安全室公告] {white}打開安全門的是 {orange}%N"
+	}
+
+	"Door_Close"
+	{
+		"zho"		"{olive}[安全室公告] {white}關閉安全門的是 {orange}%N"
+	}
+
+	"Door_Wait"
+	{
+		"zho"		"{olive}[安全室公告] {white}安全門即將解鎖，在 {orange}%d {white}秒"
+	}
+
+	"Door_Unlocked"
+	{
+		"zho"		"{olive}[安全室公告] {white}安全門 {orange}打開了"
+	}
+}
