@@ -18,7 +18,7 @@
 
 
 
-#define PLUGIN_VERSION 		"1.18"
+#define PLUGIN_VERSION 		"1.21"
 
 /*=======================================================================================
 	Plugin Info:
@@ -31,6 +31,15 @@
 
 ========================================================================================
 	Change Log:
+
+1.21 (07-Dec-2022)
+	- Fixed the Tanks damage not being considered. Thanks to "a2121858" for reporting.
+
+1.20 (28-Oct-2022)
+	- Added optional translations support. Requested by "NoroHime".
+
+1.19 (27-Jun-2022)
+	- Fixed custom spawn locations not loading on round restarts. Thanks to "gongo" for reporting.
 
 1.18 (24-Jun-2022)
 	- Added cvar "l4d_barricade_vocalize" to vocalize when building. Thanks to "gongo" for the suggestion.
@@ -183,9 +192,9 @@ enum
 }
 
 ConVar g_hCvarAllow, g_hCvarMPGameMode, g_hCvarModes, g_hCvarModesOff, g_hCvarModesTog, g_hCvarDamageC, g_hCvarDamageI, g_hCvarDamageS, g_hCvarDamageT, g_hCvarFlags, g_hCvarHealth, g_hCvarKeys, g_hCvarRange, g_hCvarTime, g_hCvarTimePress, g_hCvarTimeWait, g_hCvarType, g_hCvarVoca;
-int g_iCvarDamageC, g_iCvarDamageI, g_iCvarDamageS, g_iCvarDamageT, g_iCvarFlags, g_iCvarHealth, g_iCvarKeys, g_iCvarTime, g_iCvarType, g_iCvarVoca;
+int g_iClassTank, g_iCvarDamageC, g_iCvarDamageI, g_iCvarDamageS, g_iCvarDamageT, g_iCvarFlags, g_iCvarHealth, g_iCvarKeys, g_iCvarTime, g_iCvarType, g_iCvarVoca;
 float g_fCvarRange, g_fCvarTimeWait, g_fCvarTimePress;
-bool g_bCvarAllow, g_bMapStarted, g_bLeft4Dead2, g_bDoubleDoorFix, g_bDoubleDoorMap, g_bCustomData, g_bDoorsGlow, g_bWallsGlow, g_bWindsGlow;
+bool g_bCvarAllow, g_bMapStarted, g_bLeft4Dead2, g_bTranslation, g_bDoubleDoorFix, g_bDoubleDoorMap, g_bCustomData, g_bDoorsGlow, g_bWallsGlow, g_bWindsGlow;
 char g_sMod[4];
 
 ArrayList g_hBreakable;
@@ -293,6 +302,22 @@ public void OnAllPluginsLoaded()
 
 public void OnPluginStart()
 {
+	if( g_bLeft4Dead2 )
+		g_iClassTank = 8;
+	else
+		g_iClassTank = 5;
+
+	// Translations
+	char sPath[PLATFORM_MAX_PATH];
+	BuildPath(Path_SM, sPath, PLATFORM_MAX_PATH, "translations/barricade.phrases.txt");
+	if( FileExists(sPath) )
+	{
+		LoadTranslations("barricade.phrases");
+		g_bTranslation = true;
+	} else {
+		g_bTranslation = false;
+	}
+
 	// Cvars
 	g_hCvarAllow =		CreateConVar(	"l4d_barricade_allow",				"1",				"0=Plugin off, 1=Plugin on.", CVAR_FLAGS );
 	g_hCvarModes =		CreateConVar(	"l4d_barricade_modes",				"",					"Turn on the plugin in these game modes, separate by commas (no spaces). (Empty = all).", CVAR_FLAGS );
@@ -459,6 +484,7 @@ void IsAllowed()
 		g_bCvarAllow = true;
 
 		HookEvent("round_end",			Event_RoundEnd,		EventHookMode_PostNoCopy);
+		HookEvent("round_start",		Event_RoundStart,	EventHookMode_PostNoCopy);
 
 		LateLoad();
 	}
@@ -467,6 +493,7 @@ void IsAllowed()
 		g_bCvarAllow = false;
 
 		UnhookEvent("round_end",		Event_RoundEnd,		EventHookMode_PostNoCopy);
+		UnhookEvent("round_start",		Event_RoundStart,	EventHookMode_PostNoCopy);
 
 		ResetPlugin();
 	}
@@ -1327,6 +1354,12 @@ void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
 	ResetPlugin();
 }
 
+void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
+{
+	// Config
+	LoadConfig();
+}
+
 
 // ====================================================================================================
 //					ENTITY SPAWN
@@ -1666,6 +1699,9 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 					{
 						g_fPressing[client] = GetGameTime() + g_iCvarTime;
 						g_iPressing[client] = index;
+
+						static char sTemp[64];
+
 						if( g_bLeft4Dead2 )
 						{
 							RemoveButton(client);
@@ -1679,7 +1715,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 							}
 
 							// L4D2 progress bar, with custom text
-							static char sTemp[4];
 							int button = CreateEntityByName("func_button_timed");
 							DispatchKeyValueVector(button, "origin", g_vPos[index]);
 							DispatchKeyValue(button, "model", g_sMod); // Required to make text display
@@ -1688,8 +1723,21 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 							DispatchKeyValue(button, "solid", "0");
 							DispatchKeyValue(button, "auto_disable", "1");
 							DispatchKeyValue(button, "use_time", sTemp);
-							DispatchKeyValue(button, "use_string", "BARRICADE");
-							DispatchKeyValue(button, "use_sub_string", "Building plank...");
+
+							if( g_bTranslation )
+							{
+								FormatEx(sTemp, sizeof(sTemp), "%T", "L4D2_Title", client);
+								DispatchKeyValue(button, "use_string", sTemp);
+
+								FormatEx(sTemp, sizeof(sTemp), "%T", "L4D2_Text", client);
+								DispatchKeyValue(button, "use_sub_string", sTemp);
+							}
+							else
+							{
+								DispatchKeyValue(button, "use_string", "BARRICADE");
+								DispatchKeyValue(button, "use_sub_string", "Building plank...");
+							}
+
 							DispatchSpawn(button);
 
 							SetEntProp(button, Prop_Send, "m_nSolidType", 0);
@@ -1703,7 +1751,16 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 						}
 						else
 						{
-							SetEntPropString(client, Prop_Send, "m_progressBarText", "BUILDING BARRICADE...");
+							if( g_bTranslation )
+							{
+								FormatEx(sTemp, sizeof(sTemp), "%T", "L4D1_Text", client);
+								SetEntPropString(client, Prop_Send, "m_progressBarText", sTemp);
+							}
+							else
+							{
+								SetEntPropString(client, Prop_Send, "m_progressBarText", "BUILDING BARRICADE...");
+							}
+
 							SetEntPropFloat(client, Prop_Send, "m_flProgressBarStartTime", GetGameTime());
 							SetEntProp(client, Prop_Send, "m_iProgressBarDuration", g_iCvarTime);
 						}
@@ -1999,18 +2056,20 @@ Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, in
 		{
 			type = TYPE_COMMON;
 		}
-		else if( attacker <= MaxClients && inflictor <= MaxClients ) // inflictor can be melee weapon which is also DMG_CLUB
+		else if( attacker <= MaxClients )
 		{
 			if( GetClientTeam(attacker) == 3 )
 			{
 				int class = GetEntProp(attacker, Prop_Send, "m_zombieClass");
-				if( (g_bLeft4Dead2 && class == 8) || g_bLeft4Dead2 && class == 5 )
+				if( class == g_iClassTank )
 					type = TYPE_TANK;
 				else
 					type = TYPE_INFECTED;
 			}
-			else
+			else if( inflictor <= MaxClients ) // inflictor can be melee weapon which is also DMG_CLUB
+			{
 				type = TYPE_SURVIVOR;
+			}
 		}
 
 		switch( type )
@@ -2124,14 +2183,14 @@ void PlayVocalize(int client)
 	GetEntPropString(client, Prop_Data, "m_ModelName", model, sizeof(model));
 	switch( model[29] )
 	{
-		case 'c': { Format(model, sizeof(model), "coach");		surv = 1; }
-		case 'b': { Format(model, sizeof(model), "gambler");	surv = 2; }
-		case 'h': { Format(model, sizeof(model), "mechanic");	surv = 3; }
-		case 'd': { Format(model, sizeof(model), "producer");	surv = 4; }
-		case 'v': { Format(model, sizeof(model), "NamVet");		surv = 5; }
-		case 'e': { Format(model, sizeof(model), "Biker");		surv = 6; }
-		case 'a': { Format(model, sizeof(model), "Manager");	surv = 7; }
-		case 'n': { Format(model, sizeof(model), "TeenGirl");	surv = 8; }
+		case 'c': { model = "coach";		surv = 1; }
+		case 'b': { model = "gambler";	surv = 2; }
+		case 'h': { model = "mechanic";	surv = 3; }
+		case 'd': { model = "producer";	surv = 4; }
+		case 'v': { model = "NamVet";		surv = 5; }
+		case 'e': { model = "Biker";		surv = 6; }
+		case 'a': { model = "Manager";	surv = 7; }
+		case 'n': { model = "TeenGirl";	surv = 8; }
 		default:
 		{
 			int character = GetEntProp(client, Prop_Send, "m_survivorCharacter");
@@ -2140,22 +2199,22 @@ void PlayVocalize(int client)
 			{
 				switch( character )
 				{
-					case 0:	{ Format(model, sizeof(model), "gambler");		surv = 2; } // Nick
-					case 1:	{ Format(model, sizeof(model), "producer");		surv = 4; } // Rochelle
-					case 2:	{ Format(model, sizeof(model), "coach");		surv = 1; } // Coach
-					case 3:	{ Format(model, sizeof(model), "mechanic");		surv = 3; } // Ellis
-					case 4:	{ Format(model, sizeof(model), "NamVet");		surv = 5; } // Bill
-					case 5:	{ Format(model, sizeof(model), "TeenGirl");		surv = 8; } // Zoey
-					case 6:	{ Format(model, sizeof(model), "Biker");		surv = 6; } // Francis
-					case 7:	{ Format(model, sizeof(model), "Manager");		surv = 7; } // Louis
+					case 0:	{ model = "gambler";		surv = 2; } // Nick
+					case 1:	{ model = "producer";		surv = 4; } // Rochelle
+					case 2:	{ model = "coach";			surv = 1; } // Coach
+					case 3:	{ model = "mechanic";		surv = 3; } // Ellis
+					case 4:	{ model = "NamVet";			surv = 5; } // Bill
+					case 5:	{ model = "TeenGirl";		surv = 8; } // Zoey
+					case 6:	{ model = "Biker";			surv = 6; } // Francis
+					case 7:	{ model = "Manager";		surv = 7; } // Louis
 				}
 			} else {
 				switch( character )
 				{
-					case 0:	 { Format(model, sizeof(model) ,"TeenGirl");	surv = 8; } // Zoey
-					case 1:	 { Format(model, sizeof(model) ,"NamVet");		surv = 5; } // Bill
-					case 2:	 { Format(model, sizeof(model) ,"Biker");		surv = 6; } // Francis
-					case 3:	 { Format(model, sizeof(model) ,"Manager");		surv = 7; } // Louis
+					case 0:	 { model = "TeenGirl";		surv = 8; } // Zoey
+					case 1:	 { model = "NamVet";		surv = 5; } // Bill
+					case 2:	 { model = "Biker";			surv = 6; } // Francis
+					case 3:	 { model = "Manager";		surv = 7; } // Louis
 				}
 			}
 		}
