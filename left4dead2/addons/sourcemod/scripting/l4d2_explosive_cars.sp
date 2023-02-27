@@ -1,179 +1,207 @@
-#pragma semicolon 1
-#pragma newdecls required
 #include <sourcemod>
 #include <sdktools>
 #include <sdkhooks>
-#include <left4dhooks>
 
-#define GETVERSION "1.6"
-#define ARRAY_SIZE 2048
-#define ENTITY_SAFE_LIMIT 2000 //don't spawn entity when it's index is above this
+#define GETVERSION "1.0.4"
+#define ARRAY_SIZE 2150
 
 #define TEST_DEBUG 		0
 #define TEST_DEBUG_LOG 	0
+#define DEBUG 0
 
-static const char FIRE_PARTICLE[] = 		"gas_explosion_ground_fire";
-static const char EXPLOSION_PARTICLE[] = 	"weapon_pipebomb";
-static const char EXPLOSION_PARTICLE2[] = "weapon_grenade_explosion";
-static const char EXPLOSION_PARTICLE3[] = "explosion_huge_b";
-static const char EXPLOSION_SOUND[] = 	"ambient/explosions/explode_1.wav";
-static const char EXPLOSION_SOUND2[] = 	"ambient/explosions/explode_2.wav";
-static const char EXPLOSION_SOUND3[] = 	"ambient/explosions/explode_3.wav";
-static const char DAMAGE_WHITE_SMOKE[] = 	"minigun_overheat_smoke";
-static const char DAMAGE_BLACK_SMOKE[] = 	"smoke_burning_engine_01";
-static const char DAMAGE_FIRE_SMALL[] = 	"burning_engine_01";
-static const char DAMAGE_FIRE_HUGE[] = 	"fire_window_hotel2";
-static const char FIRE_SOUND[] = 			"ambient/fire/fire_med_loop1.wav";
-static bool   g_bConfigLoaded;
+static const String:FIRE_PARTICLE[] = 		"gas_explosion_ground_fire";
+static const String:EXPLOSION_PARTICLE[] = 	"weapon_pipebomb";
+static const String:EXPLOSION_PARTICLE2[] = "weapon_grenade_explosion";
+static const String:EXPLOSION_PARTICLE3[] = "explosion_huge_b";
+static const String:EXPLOSION_SOUND[] = 	"ambient/explosions/explode_1.wav";
+static const String:EXPLOSION_SOUND2[] = 	"ambient/explosions/explode_2.wav";
+static const String:EXPLOSION_SOUND3[] = 	"ambient/explosions/explode_3.wav";
+static const String:DAMAGE_WHITE_SMOKE[] = 	"minigun_overheat_smoke";
+static const String:DAMAGE_BLACK_SMOKE[] = 	"smoke_burning_engine_01";
+static const String:DAMAGE_FIRE_SMALL[] = 	"burning_engine_01";
+static const String:DAMAGE_FIRE_HUGE[] = 	"fire_window_hotel2";
+static const String:FIRE_SOUND[] = 			"ambient/fire/fire_med_loop1.wav";
 
-bool g_bLowWreck[ARRAY_SIZE+1] = false;
-bool g_bMidWreck[ARRAY_SIZE+1] = false;
-bool g_bHighWreck[ARRAY_SIZE+1] = false;
-bool g_bCritWreck[ARRAY_SIZE+1] = false;
-bool g_bExploded[ARRAY_SIZE+1] = false;
-bool g_bHooked[ARRAY_SIZE+1] = false;
-int g_iEntityDamage[ARRAY_SIZE+1] = 0;
-int g_iParticle[ARRAY_SIZE+1] = -1;
-bool g_bDisabled = false;
-int g_iPlayerSpawn, g_iRoundStart;
+new bool:g_bLowWreck[ARRAY_SIZE] = false;
+new bool:g_bMidWreck[ARRAY_SIZE] = false;
+new bool:g_bHighWreck[ARRAY_SIZE] = false;
+new bool:g_bCritWreck[ARRAY_SIZE] = false;
+new bool:g_bExploded[ARRAY_SIZE] = false;
+new bool:g_bHooked[ARRAY_SIZE] = false;
+new g_iEntityDamage[ARRAY_SIZE] = 0;
+new g_iParticle[ARRAY_SIZE] = -1;
 
+new bool:g_bDisabled = false;
+new bool:g_bFindCars = false;
 
-ConVar g_cvarMaxHealth;
-ConVar g_cvarRadius;
-ConVar g_cvarPower;
-ConVar g_cvarTrace;
-ConVar g_cvarPanic;
-ConVar g_cvarPanicChance;
-ConVar g_cvarInfected;
-ConVar g_cvarTankDamage;
-ConVar g_cvarBurnTimeout;
-ConVar g_cvarUnload;
-ConVar g_cvarExplosionDmg;
-ConVar g_cvarFireDmgInterval;
-ConVar g_cvarDamage;
+new Handle:g_hGameConf = INVALID_HANDLE;
+new Handle:sdkCallPushPlayer = INVALID_HANDLE;
+new Handle:g_cvarMaxHealth = INVALID_HANDLE;
+new Handle:g_cvarRadius = INVALID_HANDLE;
+new Handle:g_cvarPower = INVALID_HANDLE;
+new Handle:g_cvarTrace = INVALID_HANDLE;
+new Handle:g_cvarPanic = INVALID_HANDLE;
+new Handle:g_cvarPanicChance = INVALID_HANDLE;
+new Handle:g_cvarInfected = INVALID_HANDLE;
+new Handle:g_cvarTankDamage = INVALID_HANDLE;
+new Handle:g_cvarBurnTimeout = INVALID_HANDLE;
+new Handle:g_cvarUnload = INVALID_HANDLE;
+new Handle:g_cvarExplosionDmg = INVALID_HANDLE;
+new Handle:g_cvarFireDmgInterval = INVALID_HANDLE;
+new Handle:g_cvarDamage = INVALID_HANDLE;
+new Handle:g_cvarCarFlyMax = INVALID_HANDLE;
+new Handle:g_cvarCarFlyMin = INVALID_HANDLE;
+new Handle:g_cvarSelfHurt = INVALID_HANDLE;
+new Handle:g_cvarInfernoNum = INVALID_HANDLE;
+new Handle:g_cvarFireMulti = INVALID_HANDLE;
+new Handle:g_cvarExploMulti = INVALID_HANDLE;
 
-public Plugin myinfo = 
+new Handle:g_hForward_CarExplode = INVALID_HANDLE;
+new Handle:g_tBurning[ARRAY_SIZE+1] = INVALID_HANDLE;
+new Handle:sdkDetonateFire = INVALID_HANDLE;
+
+public Plugin:myinfo = 
 {
 	name = "[L4D2] Explosive Cars",
-	author = "honorcode23,Fixed: kochiurun119, HarryPotter",
+	author = "honorcode23",
 	description = "Cars explode after they take some damage",
 	version = GETVERSION,
 	url = "http://forums.alliedmods.net/showthread.php?t=138644"
 }
 
-public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max) 
+public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
-	EngineVersion test = GetEngineVersion();
-	
-	if( test != Engine_Left4Dead2 )
+	if(late)
 	{
-		strcopy(error, err_max, "Plugin only supports Left 4 Dead 2.");
-		return APLRes_SilentFailure;
+		g_bFindCars = true;
 	}
-	
-	return APLRes_Success; 
+	return APLRes_Success;
 }
 
-public void OnPluginStart()
+public OnPluginStart()
 {
+	//Left 4 dead 2 only
+	decl String:sGame[256];
+	GetGameFolderName(sGame, sizeof(sGame));
+	if (!StrEqual(sGame, "left4dead2", false))
+	{
+		SetFailState("Explosive Cars supports Left 4 dead 2 only!");
+	}
+	
 	//Convars
 	CreateConVar("l4d2_explosive_cars_version", GETVERSION, "Version of the [L4D2] Explosive Cars plugin", FCVAR_SPONLY|FCVAR_NOTIFY|FCVAR_DONTRECORD);
-	g_cvarMaxHealth = CreateConVar("l4d2_explosive_cars_health", "5000", "Maximum health of the cars", FCVAR_NOTIFY);
-	g_cvarRadius = CreateConVar("l4d2_explosive_cars_radius", "420", "Maximum radius of the explosion", FCVAR_NOTIFY);
-	g_cvarPower = CreateConVar("l4d2_explosive_cars_power", "300", "Power of the explosion when the car explodes", FCVAR_NOTIFY);
-	g_cvarDamage = CreateConVar("l4d2_explosive_cars_damage", "10", "Damage made by the explosion", FCVAR_NOTIFY);
-	g_cvarTrace = CreateConVar("l4d2_explosive_cars_trace", "25", "Time before the fire trace left by the explosion expires", FCVAR_NOTIFY);
-	g_cvarPanic = CreateConVar("l4d2_explosive_cars_panic", "1", "Should the car explosion cause a panic event? (1: Yes 0: No)", FCVAR_NOTIFY);
-	g_cvarPanicChance = CreateConVar("l4d2_explosive_cars_panic_chance", "5", "Chance that the cars explosion might call a horde (1 / CVAR) [1: Always]", FCVAR_NOTIFY);
-	g_cvarInfected = CreateConVar("l4d2_explosive_cars_infected", "1", "Should infected trigger the car explosion? (1: Yes 0: No)", FCVAR_NOTIFY);
-	g_cvarTankDamage = CreateConVar("l4d2_explosive_cars_tank", "0", "How much damage do the tank deal to the cars? (0: Default, which is 999 from the engine)", FCVAR_NOTIFY);
-	g_cvarBurnTimeout = CreateConVar("l4d2_explosive_cars_removetime", "60", "Time to wait before removing the exploded car in case it blockes the way. (0: Don't remove)", FCVAR_NOTIFY);
-	g_cvarUnload = CreateConVar("l4d2_explosive_cars_unload", "c1m4_atrium,c5m5_bridge,c14m2_lighthouse", "On which maps should the plugin disable itself? (Example: c5m3_cemetery,c5m5_bridge,cmdd_custom)", FCVAR_NOTIFY);
-	g_cvarExplosionDmg = CreateConVar("l4d2_explosive_cars_explosion_damage", "1", "Should cars get damaged by another car's explosion?", FCVAR_NOTIFY);
-	g_cvarFireDmgInterval = CreateConVar("l4d2_explosive_cars_trace_interval", "0.4", "How often should the fire trace left by the explosion hurt?", FCVAR_NOTIFY);
+	g_cvarMaxHealth = CreateConVar("l4d2_explosive_cars_health", "5000", "Maximum health of the cars", FCVAR_PLUGIN);
+	g_cvarRadius = CreateConVar("l4d2_explosive_cars_radius", "420", "Maximum radius of the explosion", FCVAR_PLUGIN);
+	g_cvarPower = CreateConVar("l4d2_explosive_cars_power", "300", "Power of the explosion when the car explodes", FCVAR_PLUGIN);
+	g_cvarDamage = CreateConVar("l4d2_explosive_cars_damage", "100", "Damage made by the explosion", FCVAR_PLUGIN);
+	g_cvarTrace = CreateConVar("l4d2_explosive_cars_trace", "25", "Time before the fire trace left by the explosion expires", FCVAR_PLUGIN);
+	g_cvarPanic = CreateConVar("l4d2_explosive_cars_panic", "1", "Should the car explosion cause a panic event? (1: Yes 0: No)", FCVAR_PLUGIN);
+	g_cvarPanicChance = CreateConVar("l4d2_explosive_cars_panic_chance", "100", "Chance that the cars explosion might call a horde (%)", FCVAR_PLUGIN);
+	g_cvarInfected = CreateConVar("l4d2_explosive_cars_infected", "1", "Should infected trigger the car explosion? (1: Yes 0: No)", FCVAR_PLUGIN);
+	g_cvarTankDamage = CreateConVar("l4d2_explosive_cars_tank", "0", "How much damage do the tank deal to the cars? (0: Default, which is 999 from the engine)", FCVAR_PLUGIN);
+	g_cvarBurnTimeout = CreateConVar("l4d2_explosive_cars_burntime", "0", "Time to wait before stopping the fire on the exploded car (0: Don't stop)", FCVAR_PLUGIN);
+	g_cvarUnload = CreateConVar("l4d2_explosive_cars_unload", "none", "On which maps should the plugin disable itself? (Example: c5m3_cemetery, c5m5_bridge, cmdd_custom)", FCVAR_PLUGIN);
+	g_cvarExplosionDmg = CreateConVar("l4d2_explosive_cars_explosion_damage", "1", "Should cars get damaged by another car's explosion?", FCVAR_PLUGIN);
+	g_cvarFireDmgInterval = CreateConVar("l4d2_explosive_cars_trace_interval", "0.4", "How often should the fire trace left by the explosion hurt?", FCVAR_PLUGIN);
+	g_cvarCarFlyMax = CreateConVar("l4d2_explosive_cars_car_max_height", "2500", "Maximum power when the car is launched", FCVAR_PLUGIN);
+	g_cvarCarFlyMin = CreateConVar("l4d2_explosive_cars_car_min_height", "1000", "Minimum power when the car is launched", FCVAR_PLUGIN);
+	g_cvarSelfHurt = CreateConVar("l4d2_explosive_cars_fire_selfdamage", "0", "Should the car get damage from its own fire before it explodes? This will eventually end in a explosion", FCVAR_PLUGIN);
+	g_cvarInfernoNum = CreateConVar("l4d2_explosive_cars_inferno_count", "2", "How many extra infernos (fire) should be created upon explosion?", FCVAR_PLUGIN);
+	g_cvarFireMulti = CreateConVar("l4d2_explosive_cars_fire_multiplier", "2.42", "Multiplier of the damage received by the car from fire (Note: Normal is 8 damage per 0.5 secs)", FCVAR_PLUGIN);
+	g_cvarExploMulti = CreateConVar("l4d2_explosive_cars_explosion_multiplier", "45.67", "Multiplier of the damage received by the car from explosions (Pipe bombs, grenade launcher, propane tanks, etc) (Note: Normal is 15-20 damage per shot)", FCVAR_PLUGIN);
 	
 	AutoExecConfig(true, "l4d2_explosive_cars");
 	
 	//Events
-	HookEvent("player_spawn",		Event_PlayerSpawn,	EventHookMode_PostNoCopy);
-	HookEvent("round_start",		Event_RoundStart,	EventHookMode_PostNoCopy);
-	HookEvent("round_end",			Event_RoundEnd,		EventHookMode_PostNoCopy);
+	HookEvent("round_start_post_nav", Event_RoundStart);
 	
-	FindMapCars();
+	//DEV
+	RegAdminCmd("sm_fire", CmdFire, ADMFLAG_ROOT, "Simulates car explosion inferno");
+	
+	//Signatures
+	g_hGameConf = LoadGameConfigFile("l4d2explosivecars");
+	if(g_hGameConf == INVALID_HANDLE)
+	{
+		SetFailState("Unable to find the signatures file. Make sure it is on the 'gamedata' folder");
+	}
+	StartPrepSDKCall(SDKCall_Player);
+	PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Signature, "CTerrorPlayer_Fling");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
+	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer);
+	PrepSDKCall_AddParameter(SDKType_Float, SDKPass_Plain);
+	sdkCallPushPlayer = EndPrepSDKCall();
+	if(sdkCallPushPlayer == INVALID_HANDLE)
+	{
+		SetFailState("Unable to find the 'CTerrorPlayer_Fling' signature, check the file version!");
+	}
+	
+	StartPrepSDKCall(SDKCall_Static);
+	PrepSDKCall_SetFromConf(g_hGameConf, SDKConf_Signature, "CMolotovProjectile_Create");
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef);
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef);
+	PrepSDKCall_AddParameter(SDKType_CBasePlayer, SDKPass_Pointer);
+	sdkDetonateFire = EndPrepSDKCall();
+	if(sdkDetonateFire == INVALID_HANDLE)
+	{
+		SetFailState("Unable to find the \"CMolotovProjectile::Detonate(void)\" signature, check the file version!");
+	}
+	
+	if(g_bFindCars)
+	{
+		FindMapCars();
+	}
+	g_bFindCars = false;
+	
+	g_hForward_CarExplode = CreateGlobalForward("OnCarExploded", ET_Event, Param_Cell, Param_Cell);
 }
 
-public void OnPluginEnd()
+public Action:CmdFire(client, args)
 {
-	ResetPlugin();
+	decl Float:pos[3];
+	GetClientAbsOrigin(client, pos);
+	CreateInferno(client, pos);
+	return Plugin_Handled;
 }
 
-public void OnMapStart()
+public OnMapStart()
 {
 	g_bDisabled = false;
-	char sCurrentMap[64], sCvarMap[256];
+	decl String:sCurrentMap[64], String:sCvarMap[256];
 	GetCurrentMap(sCurrentMap, sizeof(sCurrentMap));
-	g_cvarUnload.GetString(sCvarMap, sizeof(sCvarMap));
+	GetConVarString(g_cvarUnload, sCvarMap, sizeof(sCvarMap));
 	if(StrContains(sCvarMap, sCurrentMap) >= 0)
 	{
 		LogMessage("[Unload] Plugin disabled for this map");
 		g_bDisabled = true;
 	}
-
-	if(g_bDisabled == false)
+	if(!IsModelPrecached("sprites/muzzleflash4.vmt"))
 	{
-		PrecacheParticle(EXPLOSION_PARTICLE);
-		PrecacheParticle(EXPLOSION_PARTICLE2);
-		PrecacheParticle(EXPLOSION_PARTICLE3);
-		PrecacheParticle(FIRE_PARTICLE);
-		PrecacheParticle(DAMAGE_WHITE_SMOKE);
-		PrecacheParticle(DAMAGE_BLACK_SMOKE);
-		PrecacheParticle(DAMAGE_FIRE_SMALL);
-		PrecacheParticle(DAMAGE_FIRE_HUGE);
 		PrecacheModel("sprites/muzzleflash4.vmt");
-		PrecacheModel("models/props_vehicles/cara_82hatchback_wrecked.mdl");
-		PrecacheModel("models/props_vehicles/cara_95sedan_wrecked.mdl");
+	}
+	PrecacheParticle(EXPLOSION_PARTICLE);
+	PrecacheParticle(EXPLOSION_PARTICLE2);
+	PrecacheParticle(EXPLOSION_PARTICLE3);
+	PrecacheParticle(FIRE_PARTICLE);
+	PrecacheParticle(DAMAGE_WHITE_SMOKE);
+	PrecacheParticle(DAMAGE_BLACK_SMOKE);
+	PrecacheParticle(DAMAGE_FIRE_SMALL);
+	PrecacheParticle(DAMAGE_FIRE_HUGE);
+	for(new i =1 ; i <= ARRAY_SIZE; i++)
+	{
+		g_tBurning[i] = INVALID_HANDLE;
 	}
 }
 
-public void OnMapEnd()
+public Event_RoundStart(Handle:event, String:event_name[], bool:dontBroadcast)
 {
-	ResetPlugin();
-	g_bConfigLoaded = false;
-}
-
-public void Event_RoundEnd(Event event, const char[] name, bool dontBroadcast)
-{
-	ResetPlugin();
-}
-
-public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
-{
-	if( g_iPlayerSpawn == 1 && g_iRoundStart == 0 )
-		CreateTimer(0.5, TimerStart, _, TIMER_FLAG_NO_MAPCHANGE);
-	g_iRoundStart = 1;
-}
-
-public void Event_PlayerSpawn(Event event, const char[] name, bool dontBroadcast)
-{
-	if( g_iPlayerSpawn == 0 && g_iRoundStart == 1 )
-		CreateTimer(0.5, TimerStart, _, TIMER_FLAG_NO_MAPCHANGE);
-	g_iPlayerSpawn = 1;
-}
-
-public Action TimerStart(Handle timer)
-{
-	g_bConfigLoaded = true;
-	ResetPlugin();
-
-	if(g_bDisabled) return;
-
-	FindMapCars();
-}
-
-//Thanks to AtomicStryker
-void FindMapCars()
-{
-	for(int i = 1; i <= ARRAY_SIZE; i++)
+	if(g_bDisabled)
+	{
+		return;
+	}
+	for(new i=1; i<ARRAY_SIZE; i++)
 	{
 		g_iEntityDamage[i] = 0;
 		g_bLowWreck[i] = false;
@@ -184,560 +212,758 @@ void FindMapCars()
 		g_bExploded[i] = false;
 		g_iParticle[i] = -1;
 	}
+}
 
-	int maxEnts = GetMaxEntities();
-	char classname[128], model[256];
-
-	for (int i = MaxClients; i < maxEnts; i++)
+//Thanks to AtomicStryker
+static FindMapCars()
+{
+	if(g_bDisabled)
 	{
-		if (!IsValidEdict(i)||!IsValidEntity(i)) continue;
-		if (g_bHooked[i]) continue;
-
+		return;
+	}
+	new maxEnts = GetMaxEntities();
+	decl String:classname[128], String:model[256];
+	
+	for (new i = MaxClients; i < maxEnts; i++)
+	{
+		if (!IsValidEdict(i)) continue;
+		
 		GetEdictClassname(i, classname, sizeof(classname));
-		GetEntPropString(i, Prop_Data, "m_ModelName", model, sizeof(model));
-
-		if(strcmp(classname, "prop_physics")  == 0 || strcmp(classname, "prop_physics_override") == 0)
+		
+		if(StrEqual(classname, "prop_physics")
+		|| StrEqual(classname, "prop_physics_override"))
 		{
-			if(StrContains(model, "vehicle", false) != -1)
+			GetEntPropString(i, Prop_Data, "m_ModelName", model, sizeof(model))
+			if(StrContains(model, "vehicle", false) != -1 && !g_bHooked[i])
 			{
 				g_bHooked[i] = true;
 				SDKHook(i, SDKHook_OnTakeDamagePost, OnTakeDamagePost);
-			}
-			else if (strcmp(model, "models/props/cs_assault/forklift.mdl", false) == 0 || strcmp(model, "models/props_fairgrounds/bumpercar.mdl", false) == 0)
-			{
-				g_bHooked[i] = true;
-				SDKHook(i, SDKHook_OnTakeDamagePost, OnTakeDamagePost);
+				DebugPrintToAll("Activated Explosive Car Damage Hook on entity %i, class %s", i, classname);
 			}
 		}
-		else if(strcmp(classname, "prop_car_alarm") == 0)
+		else if(StrEqual(classname, "prop_car_alarm"))
 		{
-			if(StrContains(model, "vehicle", false) != -1)
+			GetEntPropString(i, Prop_Data, "m_ModelName", model, sizeof(model))
+			if(StrContains(model, "vehicle", false) != -1 && !g_bHooked[i])
 			{
 				g_bHooked[i] = true;
 				SDKHook(i, SDKHook_OnTakeDamagePost, OnTakeDamagePost);
+				DebugPrintToAll("Activated Explosive Car Damage Hook on entity %i, class %s", i, classname);
 			}
 		}
 	}
 }
 
-public void OnEntityDestroyed(int entity)
+public OnEntityDestroyed(entity)
 {
-	if(g_bDisabled) return;
-
-	if(entity > 0 && entity <= ARRAY_SIZE)
+	if(g_bDisabled)
+	{
+		return;
+	}
+	if(entity > 0 && entity < ARRAY_SIZE)
 	{
 		g_bHooked[entity] = false;
-		g_iEntityDamage[entity] = 0;
-		g_bLowWreck[entity] = false;
-		g_bMidWreck[entity] = false;
-		g_bHighWreck[entity] = false;
-		g_bCritWreck[entity] = false;
-		g_bHooked[entity] = false;
-		g_bExploded[entity] = false;
-		g_iParticle[entity] = -1;
 	}
 }
 
-public void OnEntityCreated(int entity, const char[] classname)
+public OnEntityCreated(entity, const String:classname[])
 {
-	if(g_bDisabled) 
+	if(g_bDisabled)
+	{
 		return;
-
-	if (!g_bConfigLoaded)
-		return;
-
-	if (!IsValidEntityIndex(entity))
-		return;
-
-	RequestFrame(OnNextFrame, EntIndexToEntRef(entity));
+	}
+	if(StrEqual(classname, "prop_physics") || StrEqual(classname, "prop_physics_override") && !g_bHooked[entity])
+	{
+		CreateTimer(0.1, timerCheckHook, entity, TIMER_FLAG_NO_MAPCHANGE);
+	}
+	
+	if(StrEqual(classname, "prop_car_alarm") && !g_bHooked[entity])
+	{
+		SDKHook(entity, SDKHook_OnTakeDamagePost, OnTakeDamagePost);
+		g_bHooked[entity] = true;
+		DebugPrintToAll("Activated Explosive Car Damage Hook on entity %i, class %s", entity, classname);
+	}
+	
+	#if DEBUG
+	if(StrEqual(classname, "molotov_projectile"))
+	{
+		PrintToChatAll("\x05[DEBUG] \x01Molotov Projectile Created");
+		PrintToChatAll("\x05[DEBUG] \x01Comencing Dump");
+		PrintToChatAll("\x05[DEBUG] \x01m_flDamage -> %f", GetEntPropFloat(entity, Prop_Send, "m_flDamage"));
+		PrintToChatAll("\x05[DEBUG] \x01m_DmgRadius -> %f", GetEntPropFloat(entity, Prop_Send, "m_DmgRadius"));
+		PrintToChatAll("\x05[DEBUG] \x01m_bIsLive -> %b", GetEntProp(entity, Prop_Send, "m_bIsLive"));
+		PrintToChatAll("\x05[DEBUG] \x01m_fFlags -> %i", GetEntProp(entity, Prop_Send, "m_fFlags"));
+		CreateTimer(0.1, timerCheckChanges, entity);
+	}
+	#endif
+	
 }
 
-public void OnNextFrame(int entityRef)
+public Action:timerCheckChanges(Handle:timer, any:entity)
 {
-	if(g_bDisabled) 
-		return;
-
-	int entity = EntRefToEntIndex(entityRef);
-
-	if (entity == INVALID_ENT_REFERENCE)
-		return;
-
-	if (g_bHooked[entity])
-		return;
-
-	char classname[15];
-	GetEntityClassname(entity, classname, sizeof(classname));
-	char model[256];
-	if(strcmp(classname, "prop_physics") == 0 || strcmp(classname, "prop_physics_override") == 0)
+	if(IsValidEntity(entity))
 	{
-		GetEntPropString(entity, Prop_Data, "m_ModelName", model, sizeof(model));
+		PrintToChatAll("\x05[POST] \x01Molotov Projectile Created");
+		PrintToChatAll("\x05[POST] \x01Comencing Dump");
+		PrintToChatAll("\x05[POST] \x01m_flDamage -> %f", GetEntPropFloat(entity, Prop_Send, "m_flDamage"));
+		PrintToChatAll("\x05[POST] \x01m_DmgRadius -> %f", GetEntPropFloat(entity, Prop_Send, "m_DmgRadius"));
+		PrintToChatAll("\x05[POST] \x01m_bIsLive -> %b", GetEntProp(entity, Prop_Send, "m_bIsLive"));
+		PrintToChatAll("\x05[POST] \x01m_fFlags -> %i", GetEntProp(entity, Prop_Send, "m_fFlags"));
+	}
+}
+
+public Action:timerCheckHook(Handle:timer, any:entity)
+{
+	if(g_bDisabled)
+	{
+		return;
+	}
+	if(IsValidEntity(entity))
+	{
+		decl String:model[256];
+		GetEntPropString(entity, Prop_Data, "m_ModelName", model, sizeof(model))
 		if(StrContains(model, "vehicle", false) != -1)
 		{
 			SDKHook(entity, SDKHook_OnTakeDamagePost, OnTakeDamagePost);
 			g_bHooked[entity] = true;
-			g_iEntityDamage[entity] = 0;
-			g_bLowWreck[entity] = false;
-			g_bMidWreck[entity] = false;
-			g_bHighWreck[entity] = false;
-			g_bCritWreck[entity] = false;
-			g_bHooked[entity] = false;
-			g_bExploded[entity] = false;
-			g_iParticle[entity] = -1;
+			DebugPrintToAll("Activated Explosive Car Damage Hook on entity %i", entity);
 		}
-	}
-	else if(strcmp(classname, "prop_car_alarm") == 0)
-	{
-		SDKHook(entity, SDKHook_OnTakeDamagePost, OnTakeDamagePost);
-		g_bHooked[entity] = true;
-		g_iEntityDamage[entity] = 0;
-		g_bLowWreck[entity] = false;
-		g_bMidWreck[entity] = false;
-		g_bHighWreck[entity] = false;
-		g_bCritWreck[entity] = false;
-		g_bHooked[entity] = false;
-		g_bExploded[entity] = false;
-		g_iParticle[entity] = -1;
 	}
 }
 
-public void OnTakeDamagePost(int victim, int attacker, int inflictor, float damage, int damagetype)
+public OnTakeDamagePost(victim, attacker, inflictor, Float:damage, damagetype)
 {
-	if(g_bDisabled) return;
-
-	if( inflictor > 0 && IsValidEntity(inflictor) && attacker > 0)
+	if(g_bDisabled)
 	{
-		char attackerClass[256];
-		GetEdictClassname(attacker, attackerClass, sizeof(attackerClass));
-
-		char inflictorClass[256];
-		GetEdictClassname(inflictor, inflictorClass, sizeof(inflictorClass));
-
-		int MaxDamageHandle = g_cvarMaxHealth.IntValue / 5;
-
-		//PrintToChatAll("%d - attackerClass: %s - inflictorClass: %s, %.1f damage", victim, attackerClass, inflictorClass, damage);
-		if(strcmp(attackerClass, "player")  == 0)
+		return;
+	}
+	decl String:class[256];
+	GetEdictClassname(inflictor, class, sizeof(class));
+	
+	new MaxDamageHandle = GetConVarInt(g_cvarMaxHealth)/5;
+	
+	if(StrEqual(class, "weapon_melee"))
+	{
+		damage = 5.0;
+	}
+	else if(StrEqual(class, "env_explosion") && !GetConVarBool(g_cvarExplosionDmg))
+	{
+		damage = 0.0;
+	}
+	else if((StrEqual(class, "player") && attacker > 0 && attacker <= MaxClients && IsClientInGame(attacker) && GetClientTeam(attacker) == 3) && !GetConVarBool(g_cvarInfected))
+	{
+		damage = 0.0;
+	}
+	else if(StrEqual(class, "tank_rock") || StrEqual(class, "weapon_tank_claw"))
+	{
+		if(!GetConVarBool(g_cvarInfected))
 		{
-			if(strcmp(inflictorClass, "weapon_chainsaw") == 0 || strcmp(inflictorClass, "weapon_melee") == 0)
-			{
-				damage = 5.0;
-			}
-			else if(strcmp(inflictorClass, "tank_rock") == 0|| strcmp(inflictorClass, "weapon_tank_claw") == 0)
-			{
-				float tank_damage = g_cvarTankDamage.FloatValue;
-				if(tank_damage > 0.0)
-				{
-					damage = tank_damage;
-				}
-			}
-			if(attacker > 0 && attacker <= MaxClients && IsClientInGame(attacker) && GetClientTeam(attacker) == 3 && g_cvarInfected.BoolValue == false)
-			{
-				damage = 0.0;
-			}
+			damage = 0.0;
 		}
-		if( strcmp(inflictorClass, "env_explosion") == 0 || strcmp(inflictorClass, "env_physexplosion") == 0) //explode dmg by another car
+		new Float:tank_damage = GetConVarFloat(g_cvarTankDamage)
+		if(tank_damage > 0.0 && GetConVarBool(g_cvarInfected))
 		{
-			if(g_cvarExplosionDmg.BoolValue == false)
-				damage = 0.0;
-			else 
-				damage = 3000.0;
+			damage = tank_damage;
 		}
-		else if (strcmp(inflictorClass, "pipe_bomb_projectile") == 0 || strcmp(inflictorClass, "grenade_launcher_projectile") == 0)
-		{
-			damage = 3000.0;
-		}
-		else if (strcmp(inflictorClass, "inferno")  == 0 || strcmp(inflictorClass, "fire_cracker_blast") == 0)
-		{
-			damage = 100.0;
-		}
-
-		g_iEntityDamage[victim] += RoundToFloor(damage);
-		int tdamage = g_iEntityDamage[victim];
-		//PrintHintTextToAll("%i damaged by <%s>(%i) for %f damage [%i | %i]", victim, attackerClass, attacker, damage, tdamage, g_cvarMaxHealth.IntValue); //TEST
-
-		if(tdamage >= MaxDamageHandle && tdamage < MaxDamageHandle * 2 && !g_bLowWreck[victim])
-		{
-			AttachParticle(victim, DAMAGE_WHITE_SMOKE);
-			g_bLowWreck[victim] = true;
-		}
-		else if(tdamage >= MaxDamageHandle * 2 && tdamage < MaxDamageHandle * 3 && !g_bMidWreck[victim])
-		{
-			AttachParticle(victim, DAMAGE_BLACK_SMOKE);
-			g_bMidWreck[victim] = true;
-		}
-		else if(tdamage >= MaxDamageHandle * 3 && tdamage < MaxDamageHandle * 4 && !g_bHighWreck[victim])
+	}
+	else if(StrEqual(class, "inferno") || (StrEqual(class, "trigger_hurt") && (damagetype == 8 || damagetype == 2056)))
+	{
+		damage*=GetConVarFloat(g_cvarFireMulti);
+	}
+	else if(StrEqual(class, "pipe_bomb_projectile") || StrEqual(class, "grenade_launcher_projectile"))
+	{
+		damage*=GetConVarFloat(g_cvarExploMulti);
+	}
+	
+	g_iEntityDamage[victim]+= RoundToFloor(damage);
+	new tdamage = g_iEntityDamage[victim];
+	//PrintHintTextToAll("%i damaged by <%N>(%i) (inflictor: <%s>%d) for %f damage (Type: %d)", victim, attacker, attacker, class, inflictor, damage, damagetype);
+	
+	if(tdamage >= MaxDamageHandle
+	&& tdamage < MaxDamageHandle*2
+	&& !g_bLowWreck[victim])
+	{
+		g_bLowWreck = true;
+		AttachParticle(victim, DAMAGE_WHITE_SMOKE);
+	}
+	else if(tdamage >= MaxDamageHandle*2
+	&& tdamage < MaxDamageHandle*3
+	&& !g_bMidWreck[victim])
+	{
+		g_bMidWreck = true;
+		AttachParticle(victim, DAMAGE_BLACK_SMOKE);
+	}
+	
+	else if(tdamage >= MaxDamageHandle*3
+	&& tdamage < MaxDamageHandle*4
+	&& !g_bHighWreck[victim])
+	{
+		g_bHighWreck = true;
+		if(!IsSoundPrecached(FIRE_SOUND))
 		{
 			PrecacheSound(FIRE_SOUND);
-			EmitSoundToAll(FIRE_SOUND, victim);
-			AttachParticle(victim, DAMAGE_FIRE_SMALL);
-			g_bHighWreck[victim] = true;
 		}
-		else if(tdamage >= MaxDamageHandle * 4 && tdamage < MaxDamageHandle * 5 && !g_bCritWreck[victim])
+		EmitSoundToAll(FIRE_SOUND, victim);
+		AttachParticle(victim, DAMAGE_FIRE_SMALL);
+		if(GetConVarBool(g_cvarSelfHurt))
 		{
-			AttachParticle(victim, DAMAGE_FIRE_HUGE);
-			g_bCritWreck[victim] = true;
+			if(g_tBurning[victim] == INVALID_HANDLE)
+			{
+				g_tBurning[victim] = CreateTimer(0.2, timerHurtCar, victim, TIMER_FLAG_NO_MAPCHANGE);
+			}
 		}
-		else if(tdamage > MaxDamageHandle * 5 && !g_bExploded[victim])
+	}
+	
+	else if(tdamage >= MaxDamageHandle*4
+	&& tdamage < MaxDamageHandle*5
+	&& !g_bCritWreck[victim])
+	{
+		g_bCritWreck = true;
+		AttachParticle(victim, DAMAGE_FIRE_HUGE);
+	}
+	
+	else if(tdamage > MaxDamageHandle*5
+	&& !g_bExploded[victim])
+	{
+		g_bExploded[victim] = true;
+		decl Float:carPos[3];
+		GetEntPropVector(victim, Prop_Data, "m_vecOrigin", carPos);
+		if(attacker > MaxClients)
 		{
-			g_bExploded[victim] = true;
-			float carPos[3];
-			GetEntPropVector(victim, Prop_Data, "m_vecOrigin", carPos);
-			CreateExplosion(carPos);
-			EditCar(victim);
-			LaunchCar(victim);
-
-			SDKUnhook(victim, SDKHook_OnTakeDamagePost, OnTakeDamagePost);
+			attacker = 0;
 		}
+		CreateExplosion(carPos, attacker);
+		EditCar(victim);
+		LaunchCar(victim);
+		Forward_CarExplode(attacker, victim);
 	}
 }
 
-stock void EditCar(int car)
+public Action:timerHurtCar(Handle:timer, any:car)
 {
-	SetEntityRenderColor(car, 51, 51, 51, 255);
-	char sModel[256];
-	GetEntPropString(car, Prop_Data, "m_ModelName", sModel, sizeof(sModel));
-	if(strcmp(sModel, "models/props_vehicles/cara_82hatchback.mdl") == 0)
+	g_tBurning[car] = INVALID_HANDLE;
+	if(!IsValidEntity(car) || g_bExploded[car])
 	{
+		return;
+	}
+	new damage = 8;
+	decl String:sDamage[11], String:sTarget[16];
+	IntToString(damage, sDamage, sizeof(sDamage));
+	IntToString(car+25, sTarget, sizeof(sTarget));
+	new iDmgEntity = CreateEntityByName("point_hurt");
+	DispatchKeyValue(car, "targetname", sTarget);
+	DispatchKeyValue(iDmgEntity, "DamageTarget", sTarget);
+	DispatchKeyValue(iDmgEntity, "Damage", sDamage);
+	DispatchKeyValue(iDmgEntity, "DamageType", "8");
+	DispatchSpawn(iDmgEntity);
+	AcceptEntityInput(iDmgEntity, "Hurt", car);
+	RemoveEdict(iDmgEntity);
+	if(g_tBurning[car] == INVALID_HANDLE)
+	{
+		g_tBurning[car] = CreateTimer(0.2, timerHurtCar, car, TIMER_FLAG_NO_MAPCHANGE);
+	}
+}
+
+stock EditCar(car)
+{
+	SetEntityRenderColor(car, 0, 0, 0, 255);
+	decl String:sModel[256];
+	GetEntPropString(car, Prop_Data, "m_ModelName", sModel, sizeof(sModel));
+	if(StrEqual(sModel, "models/props_vehicles/cara_82hatchback.mdl"))
+	{
+		if(!IsModelPrecached("models/props_vehicles/cara_82hatchback_wrecked.mdl"))
+		{
+			PrecacheModel("models/props_vehicles/cara_82hatchback_wrecked.mdl");
+		}
 		SetEntityModel(car, "models/props_vehicles/cara_82hatchback_wrecked.mdl");
 	}
-	else if(strcmp(sModel, "models/props_vehicles/cara_95sedan.mdl") == 0)
+	else if(StrEqual(sModel, "models/props_vehicles/cara_95sedan.mdl"))
 	{
+		if(!IsModelPrecached("models/props_vehicles/cara_95sedan_wrecked.mdl"))
+		{
+			PrecacheModel("models/props_vehicles/cara_95sedan_wrecked.mdl");
+		}
 		SetEntityModel(car, "models/props_vehicles/cara_95sedan_wrecked.mdl");
 	}
 }
 
-void LaunchCar(int car)
+stock LaunchCar(car)
 {
-	float vel[3];
+	if(g_bDisabled)
+	{
+		return;
+	}
+	decl Float:vel[3];
 	GetEntPropVector(car, Prop_Data, "m_vecVelocity", vel);
-	vel[0] += GetRandomFloat(50.0, 300.0);
-	vel[1] += GetRandomFloat(50.0, 300.0);
-	vel[2] += GetRandomFloat(1000.0, 2500.0);
+	vel[0]+= GetRandomFloat(50.0, 300.0);
+	vel[1]+= GetRandomFloat(50.0, 300.0);
+	vel[2]+= GetRandomFloat(GetConVarFloat(g_cvarCarFlyMin), GetConVarFloat(g_cvarCarFlyMax));
 	
 	TeleportEntity(car, NULL_VECTOR, NULL_VECTOR, vel);
-	CreateTimer(4.0, timerNormalVelocity, EntIndexToEntRef(car), TIMER_FLAG_NO_MAPCHANGE);
-	float burnTime = g_cvarBurnTimeout.FloatValue;
+	CreateTimer(2.5, timerNormalVelocity, car, TIMER_FLAG_NO_MAPCHANGE);
+	new Float:burnTime = GetConVarFloat(g_cvarBurnTimeout);
 	if(burnTime > 0.0)
 	{
-		CreateTimer(burnTime, timerRemoveCarFire, EntIndexToEntRef(car), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(burnTime, timerRemoveCarFire, car, TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 
-public Action timerNormalVelocity(Handle timer, any entityRef)
+public Action:timerNormalVelocity(Handle:timer, any:car)
 {
-	if(g_bDisabled) return;
-
-	int car = EntRefToEntIndex(entityRef);
-
-	if (car == INVALID_ENT_REFERENCE)
+	if(g_bDisabled)
+	{
 		return;
-
+	}
 	if(IsValidEntity(car))
 	{
-		float vel[3];
+		new Float:vel[3];
 		SetEntPropVector(car, Prop_Data, "m_vecVelocity", vel);
 		TeleportEntity(car, NULL_VECTOR, NULL_VECTOR, vel);
 	}
 }
 
-public Action timerRemoveCarFire(Handle timer, int ref)
+public Action:timerRemoveCarFire(Handle:timer, any:car)
 {
-	if(g_bDisabled) return;
-
-	int car;
-	if(ref && (car = EntRefToEntIndex(ref)) != INVALID_ENT_REFERENCE)
+	if(g_bDisabled)
 	{
-		int entity = g_iParticle[car];
-		if( IsValidEntRef(entity) )
-		{
-			AcceptEntityInput(entity, "Kill");
-			g_iParticle[car] = -1;
-			AcceptEntityInput(car, "Kill");
-		}
+		return;
+	}
+	new Particle = g_iParticle[car];
+	if(Particle > 0 && IsValidEdict(Particle))
+	{
+		AcceptEntityInput(Particle, "Kill");
 	}
 }
 
-void CreateExplosion(float carPos[3])
+stock CreateExplosion(Float:carPos[3], attacker = 0)
 {
-	char sRadius[16], sPower[16], sDamage[11], sInterval[11];
-	float flMxDistance = g_cvarRadius.FloatValue;
-	float power = g_cvarPower.FloatValue;
-	int iDamage = g_cvarDamage.IntValue;
-	float flInterval = g_cvarFireDmgInterval.FloatValue;
+	if(g_bDisabled)
+	{
+		return;
+	}
+	decl String:sRadius[16], String:sPower[16], String:sDamage[11], String:sInterval[11];
+	new Float:flMxDistance = GetConVarFloat(g_cvarRadius);
+	new Float:power = GetConVarFloat(g_cvarPower);
+	new iDamage = GetConVarInt(g_cvarDamage);
+	new Float:flInterval = GetConVarFloat(g_cvarFireDmgInterval);
 	FloatToString(flInterval, sInterval, sizeof(sInterval));
-	IntToString(g_cvarRadius.IntValue, sRadius, sizeof(sRadius));
-	IntToString(g_cvarPower.IntValue, sPower, sizeof(sPower));
+	IntToString(GetConVarInt(g_cvarRadius), sRadius, sizeof(sRadius));
+	IntToString(GetConVarInt(g_cvarPower), sPower, sizeof(sPower));
 	IntToString(iDamage, sDamage, sizeof(sDamage));
-	int exParticle2 = CreateEntityByName("info_particle_system");
-	int exParticle3 = CreateEntityByName("info_particle_system");
-	int exTrace = CreateEntityByName("info_particle_system");
-	int exPhys = CreateEntityByName("env_physexplosion");
-	int exHurt = CreateEntityByName("point_hurt");
-	int exParticle = CreateEntityByName("info_particle_system");
-	int exEntity = CreateEntityByName("env_explosion");
-
+	new exParticle2 = CreateEntityByName("info_particle_system");
+	new exParticle3 = CreateEntityByName("info_particle_system");
+	new exTrace = CreateEntityByName("info_particle_system");
+	new exPhys = CreateEntityByName("env_physexplosion");
+	new exHurt = CreateEntityByName("point_hurt");
+	new exParticle = CreateEntityByName("info_particle_system");
+	new exEntity = CreateEntityByName("env_explosion");
+	/*new exPush = CreateEntityByName("point_push");*/
+	
 	//Set up the particle explosion
-	if( CheckIfEntityMax(exParticle) )
-	{
-		DispatchKeyValue(exParticle, "effect_name", EXPLOSION_PARTICLE);
-		DispatchSpawn(exParticle);
-		ActivateEntity(exParticle);
-		TeleportEntity(exParticle, carPos, NULL_VECTOR, NULL_VECTOR);
-		AcceptEntityInput(exParticle, "Start");
-		CreateTimer(g_cvarTrace.FloatValue + 1.5, timerDeleteParticles, EntIndexToEntRef(exParticle), TIMER_FLAG_NO_MAPCHANGE);
-	}
-
-	if( CheckIfEntityMax(exParticle2) )
-	{
-		DispatchKeyValue(exParticle2, "effect_name", EXPLOSION_PARTICLE2);
-		DispatchSpawn(exParticle2);
-		ActivateEntity(exParticle2);
-		TeleportEntity(exParticle2, carPos, NULL_VECTOR, NULL_VECTOR);
-		AcceptEntityInput(exParticle2, "Start");
-		CreateTimer(g_cvarTrace.FloatValue + 1.5, timerDeleteParticles, EntIndexToEntRef(exParticle2), TIMER_FLAG_NO_MAPCHANGE);
-	}
-
-	if( CheckIfEntityMax(exParticle3) )
-	{
-		DispatchKeyValue(exParticle3, "effect_name", EXPLOSION_PARTICLE3);
-		DispatchSpawn(exParticle3);
-		ActivateEntity(exParticle3);
-		TeleportEntity(exParticle3, carPos, NULL_VECTOR, NULL_VECTOR);
-		AcceptEntityInput(exParticle3, "Start");
-		CreateTimer(g_cvarTrace.FloatValue + 1.5, timerDeleteParticles, EntIndexToEntRef(exParticle3), TIMER_FLAG_NO_MAPCHANGE);
-	}
-
-	if( CheckIfEntityMax(exTrace) )
-	{
-		DispatchKeyValue(exTrace, "effect_name", FIRE_PARTICLE);
-		DispatchSpawn(exTrace);
-		ActivateEntity(exTrace);
-		TeleportEntity(exTrace, carPos, NULL_VECTOR, NULL_VECTOR);
-		AcceptEntityInput(exTrace, "Start");
-		CreateTimer(g_cvarTrace.FloatValue, timerStop, EntIndexToEntRef(exTrace), TIMER_FLAG_NO_MAPCHANGE);
-	}
-
+	DispatchKeyValue(exParticle, "effect_name", EXPLOSION_PARTICLE);
+	DispatchSpawn(exParticle);
+	ActivateEntity(exParticle);
+	TeleportEntity(exParticle, carPos, NULL_VECTOR, NULL_VECTOR);
+	
+	DispatchKeyValue(exParticle2, "effect_name", EXPLOSION_PARTICLE2);
+	DispatchSpawn(exParticle2);
+	ActivateEntity(exParticle2);
+	TeleportEntity(exParticle2, carPos, NULL_VECTOR, NULL_VECTOR);
+	
+	DispatchKeyValue(exParticle3, "effect_name", EXPLOSION_PARTICLE3);
+	DispatchSpawn(exParticle3);
+	ActivateEntity(exParticle3);
+	TeleportEntity(exParticle3, carPos, NULL_VECTOR, NULL_VECTOR);
+	
+	DispatchKeyValue(exTrace, "effect_name", FIRE_PARTICLE);
+	DispatchSpawn(exTrace);
+	ActivateEntity(exTrace);
+	TeleportEntity(exTrace, carPos, NULL_VECTOR, NULL_VECTOR);
+	
+	
 	//Set up explosion entity
-	if( CheckIfEntityMax(exEntity) )
-	{
-		DispatchKeyValue(exEntity, "fireballsprite", "sprites/muzzleflash4.vmt");
-		DispatchKeyValue(exEntity, "iMagnitude", sDamage);
-		DispatchKeyValue(exEntity, "iRadiusOverride", sRadius);
-		DispatchKeyValue(exEntity, "spawnflags", "828");
-		DispatchSpawn(exEntity);
-		TeleportEntity(exEntity, carPos, NULL_VECTOR, NULL_VECTOR);
-		AcceptEntityInput(exEntity, "Explode");
-		CreateTimer(g_cvarTrace.FloatValue + 1.5, timerDeleteParticles, EntIndexToEntRef(exEntity), TIMER_FLAG_NO_MAPCHANGE);
-	}
-
+	DispatchKeyValue(exEntity, "fireballsprite", "sprites/muzzleflash4.vmt");
+	DispatchKeyValue(exEntity, "iMagnitude", "150");
+	DispatchKeyValue(exEntity, "iRadiusOverride", sRadius);
+	DispatchKeyValue(exEntity, "spawnflags", "828");
+	DispatchSpawn(exEntity);
+	TeleportEntity(exEntity, carPos, NULL_VECTOR, NULL_VECTOR);
+	
 	//Set up physics movement explosion
-	if( CheckIfEntityMax(exPhys) )
-	{
-		DispatchKeyValue(exPhys, "radius", sRadius);
-		DispatchKeyValue(exPhys, "magnitude", sPower);
-		DispatchSpawn(exPhys);
-		TeleportEntity(exPhys, carPos, NULL_VECTOR, NULL_VECTOR);
-		AcceptEntityInput(exPhys, "Explode");
-		CreateTimer(g_cvarTrace.FloatValue + 1.5, timerDeleteParticles, EntIndexToEntRef(exPhys), TIMER_FLAG_NO_MAPCHANGE);
-	}
+	DispatchKeyValue(exPhys, "radius", sRadius);
+	DispatchKeyValue(exPhys, "magnitude", sPower);
+	DispatchSpawn(exPhys);
+	TeleportEntity(exPhys, carPos, NULL_VECTOR, NULL_VECTOR);
+	
+	
 	//Set up hurt point
-	if( CheckIfEntityMax(exHurt) )
+	DispatchKeyValue(exHurt, "DamageRadius", sRadius);
+	DispatchKeyValue(exHurt, "DamageDelay", sInterval);
+	DispatchKeyValue(exHurt, "Damage", "1");
+	DispatchKeyValue(exHurt, "DamageType", "8");
+	DispatchSpawn(exHurt);
+	TeleportEntity(exHurt, carPos, NULL_VECTOR, NULL_VECTOR);
+	
+	CreateInferno(attacker, carPos);
+	new iInfernos = GetConVarInt(g_cvarInfernoNum);
+	for(new i = 1; i <= iInfernos; i++)
 	{
-		DispatchKeyValue(exHurt, "DamageRadius", sRadius);
-		DispatchKeyValue(exHurt, "DamageDelay", sInterval);
-		DispatchKeyValue(exHurt, "Damage", "1");
-		DispatchKeyValue(exHurt, "DamageType", "8");
-		DispatchSpawn(exHurt);
-		TeleportEntity(exHurt, carPos, NULL_VECTOR, NULL_VECTOR);
-		AcceptEntityInput(exHurt, "TurnOn");
-		CreateTimer(g_cvarTrace.FloatValue, timerTurnOff, EntIndexToEntRef(exHurt), TIMER_FLAG_NO_MAPCHANGE);
+		CreateInferno(attacker, carPos);
 	}
-
-	switch(GetRandomInt(1, 3))
+	
+	switch(GetRandomInt(1,3))
 	{
 		case 1:
 		{
-			PrecacheSound(EXPLOSION_SOUND);
+			if(!IsSoundPrecached(EXPLOSION_SOUND))
+			{
+				PrecacheSound(EXPLOSION_SOUND);
+			}
 			EmitSoundToAll(EXPLOSION_SOUND);
 		}
 		case 2:
 		{
-			PrecacheSound(EXPLOSION_SOUND2);
+			if(!IsSoundPrecached(EXPLOSION_SOUND2))
+			{
+				PrecacheSound(EXPLOSION_SOUND2);
+			}
 			EmitSoundToAll(EXPLOSION_SOUND2);
 		}
 		case 3:
 		{
-			PrecacheSound(EXPLOSION_SOUND3);
+			if(!IsSoundPrecached(EXPLOSION_SOUND3))
+			{
+				PrecacheSound(EXPLOSION_SOUND3);
+			}
 			EmitSoundToAll(EXPLOSION_SOUND3);
 		}
 	}
 	
-	if(g_cvarPanic.BoolValue == true)
+	if(GetConVarBool(g_cvarPanic))
 	{
-		int luck = g_cvarPanicChance.IntValue;
-		switch(GetRandomInt(1, luck))
+		new luck = GetConVarInt(g_cvarPanicChance);
+		if(GetRandomInt(1, 100) <= luck)
 		{
-			case 1:
-			{
-				PanicEvent();
-				PrintToChatAll("\x04[SM] \x03The car exploded and the infected heard the noise!");
-			}
+			PanicEvent();
+			PrintToChatAll("\x04[SM] \x03The car triggered a panic event, get ready!");
+			PrintHintTextToAll("\x04[SM] \x03The car triggered a panic event, get ready!");
+			//ClientCommandAll("play music/the_end/finalnail.wav");
 		}
 	}
 	
-	float survivorPos[3], traceVec[3], resultingFling[3], currentVelVec[3];
-	for(int i = 1; i <= MaxClients; i++)
+	//BOOM!
+	AcceptEntityInput(exParticle, "Start");
+	AcceptEntityInput(exParticle2, "Start");
+	AcceptEntityInput(exParticle3, "Start");
+	AcceptEntityInput(exTrace, "Start");
+	AcceptEntityInput(exEntity, "Explode");
+	AcceptEntityInput(exPhys, "Explode");
+	AcceptEntityInput(exHurt, "TurnOn");
+	
+	new Handle:pack2 = CreateDataPack();
+	WritePackCell(pack2, exParticle);
+	WritePackCell(pack2, exParticle2);
+	WritePackCell(pack2, exParticle3);
+	WritePackCell(pack2, exTrace);
+	WritePackCell(pack2, exEntity);
+	WritePackCell(pack2, exPhys);
+	WritePackCell(pack2, exHurt);
+	CreateTimer(GetConVarFloat(g_cvarTrace)+1.5, timerDeleteParticles, pack2, TIMER_FLAG_NO_MAPCHANGE);
+	
+	new Handle:pack = CreateDataPack();
+	WritePackCell(pack, exTrace);
+	WritePackCell(pack, exHurt);
+	CreateTimer(GetConVarFloat(g_cvarTrace), timerStopFire, pack, TIMER_FLAG_NO_MAPCHANGE);
+	
+	decl Float:survivorPos[3], Float:traceVec[3], Float:resultingFling[3], Float:currentVelVec[3];
+	for(new i=1; i<=MaxClients; i++)
 	{
-		if(!IsClientInGame(i) || !IsPlayerAlive(i) || GetClientTeam(i) != 2)
+		if(!IsClientInGame(i) || !IsPlayerAlive(i))
 		{
 			continue;
 		}
 
 		GetEntPropVector(i, Prop_Data, "m_vecOrigin", survivorPos);
-
+		
 		//Vector and radius distance calcs by AtomicStryker!
 		if(GetVectorDistance(carPos, survivorPos) <= flMxDistance)
 		{
 			MakeVectorFromPoints(carPos, survivorPos, traceVec);				// draw a line from car to Survivor
 			GetVectorAngles(traceVec, resultingFling);							// get the angles of that line
-
+			
 			resultingFling[0] = Cosine(DegToRad(resultingFling[1])) * power;	// use trigonometric magic
 			resultingFling[1] = Sine(DegToRad(resultingFling[1])) * power;
 			resultingFling[2] = power;
-
+			
 			GetEntPropVector(i, Prop_Data, "m_vecVelocity", currentVelVec);		// add whatever the Survivor had before
 			resultingFling[0] += currentVelVec[0];
 			resultingFling[1] += currentVelVec[1];
 			resultingFling[2] += currentVelVec[2];
-
-			FlingPlayer(i, resultingFling, i);
+			
+			if(GetClientTeam(i) == 2)
+			{
+				FlingPlayer(i, resultingFling, i);
+			}
+			else if(GetClientTeam(i) == 3)
+			{
+				TeleportEntity(i, NULL_VECTOR, NULL_VECTOR, resultingFling);
+				if(attacker > 0)
+				{
+					HurtPlayer(i, attacker);
+				}
+			}
 		}
 	}
 }
 
-public Action timerStop(Handle timer, int ref)
+public Action:timerStopFire(Handle:timer, Handle:pack)
 {
-	if(IsValidEntRef(ref))
+	if(g_bDisabled)
 	{
-		AcceptEntityInput(ref, "Stop");
-		AcceptEntityInput(ref, "kill");
+		return;
+	}
+	ResetPack(pack);
+	new particle = ReadPackCell(pack);
+	new hurt = ReadPackCell(pack);
+	CloseHandle(pack);
+	
+	if(IsValidEntity(particle))
+	{
+		AcceptEntityInput(particle, "Stop");
+	}
+	if(IsValidEntity(hurt))
+	{
+		AcceptEntityInput(hurt, "TurnOff");
 	}
 }
 
-public Action timerTurnOff(Handle timer, int ref)
+public Action:timerDeleteParticles(Handle:timer, Handle:pack)
 {
-	if(IsValidEntRef(ref))
+	if(g_bDisabled)
 	{
-		AcceptEntityInput(ref, "TurnOff");
-		AcceptEntityInput(ref, "kill");
+		return;
 	}
+	ResetPack(pack);
+	
+	new entity;
+	for (new i = 1; i <= 7; i++)
+	{
+		entity = ReadPackCell(pack);
+		
+		if(IsValidEntity(entity))
+		{
+			AcceptEntityInput(entity, "Kill");
+		}
+	}
+	CloseHandle(pack);
 }
 
-public Action timerDeleteParticles(Handle timer, int ref)
+stock FlingPlayer(target, Float:vector[3], attacker, Float:stunTime = 3.0)
 {
-	if(IsValidEntRef(ref))
+	if(g_bDisabled)
 	{
-		AcceptEntityInput(ref, "kill");
+		return;
 	}
+	SDKCall(sdkCallPushPlayer, target, vector, 76, attacker, stunTime);
 }
 
-void FlingPlayer(int target, float vector[3], int attacker)
+stock PrecacheParticle(const String:ParticleName[])
 {
-	L4D2_CTerrorPlayer_Fling(target, attacker, vector);
-}
-
-int PrecacheParticle(const char[] sEffectName)
-{
-	static int table = INVALID_STRING_TABLE;
-	if( table == INVALID_STRING_TABLE )
+	if(g_bDisabled)
 	{
-		table = FindStringTable("ParticleEffectNames");
+		return;
 	}
-
-	int index = FindStringIndex(table, sEffectName);
-	if( index == INVALID_STRING_INDEX )
+	new Particle = CreateEntityByName("info_particle_system");
+	if(IsValidEntity(Particle) && IsValidEdict(Particle))
 	{
-		bool save = LockStringTables(false);
-		AddToStringTable(table, sEffectName);
-		LockStringTables(save);
-		index = FindStringIndex(table, sEffectName);
-	}
-
-	return index;
-}
-
-void AttachParticle(int car, const char[] Particle_Name)
-{
-	float carPos[3];
-	char sName[64], sTargetName[64];
-	int Particle = CreateEntityByName("info_particle_system");
-	int entity = g_iParticle[car];
-	if( IsValidEntRef(entity) )
-	{
-		AcceptEntityInput(entity, "Kill");
-		g_iParticle[car] = -1;
-	}
-	if( CheckIfEntityMax(Particle) )
-	{
-		g_iParticle[car] = EntIndexToEntRef(Particle);
-		GetEntPropVector(car, Prop_Data, "m_vecOrigin", carPos);
-		TeleportEntity(Particle, carPos, NULL_VECTOR, NULL_VECTOR);
-		DispatchKeyValue(Particle, "effect_name", Particle_Name);
-
-		int userid = car;
-		Format(sName, sizeof(sName), "%d", userid+25);
-		DispatchKeyValue(car, "targetname", sName);
-		GetEntPropString(car, Prop_Data, "m_iName", sName, sizeof(sName));
-
-		Format(sTargetName, sizeof(sTargetName), "%d", userid+1000);
-		DispatchKeyValue(Particle, "targetname", sTargetName);
-		DispatchKeyValue(Particle, "parentname", sName);
+		DispatchKeyValue(Particle, "effect_name", ParticleName);
 		DispatchSpawn(Particle);
-		DispatchSpawn(Particle);
-		SetVariantString(sName);
-		AcceptEntityInput(Particle, "SetParent", Particle, Particle);
 		ActivateEntity(Particle);
 		AcceptEntityInput(Particle, "start");
+		CreateTimer(0.3, timerRemovePrecacheParticle, Particle, TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 
-void PanicEvent()
+public Action:timerRemovePrecacheParticle(Handle:timer, any:Particle)
 {
-	int Director = CreateEntityByName("info_director");
-	if( CheckIfEntityMax(Director) )
+	if(g_bDisabled)
 	{
-		DispatchSpawn(Director);
-		AcceptEntityInput(Director, "ForcePanicEvent");
-		AcceptEntityInput(Director, "Kill");
+		return;
 	}
-}
-
-bool IsValidEntityIndex(int entity)
-{
-    return (MaxClients+1 <= entity <= GetMaxEntities());
-}
-
-bool CheckIfEntityMax(int entity)
-{
-	if(entity == -1) return false;
-
-	if(	entity > ENTITY_SAFE_LIMIT)
+	if(IsValidEdict(Particle))
 	{
-		AcceptEntityInput(entity, "Kill");
-		return false;
+		AcceptEntityInput(Particle, "Kill");
 	}
-	return true;
 }
 
-bool IsValidEntRef(int entity)
+stock AttachParticle(car, const String:Particle_Name[])
 {
-	if( entity && EntRefToEntIndex(entity) != INVALID_ENT_REFERENCE )
-		return true;
-	return false;
+	if(g_bDisabled)
+	{
+		return;
+	}
+	decl Float:carPos[3], String:sName[64], String:sTargetName[64];
+	new Particle = CreateEntityByName("info_particle_system");
+	if(g_iParticle[car] > 0 && IsValidEntity(g_iParticle[car]))
+	{
+		AcceptEntityInput(g_iParticle[car], "Kill");
+		g_iParticle[car] = -1;
+	}
+	g_iParticle[car] = Particle;
+	GetEntPropVector(car, Prop_Data, "m_vecOrigin", carPos);
+	TeleportEntity(Particle, carPos, NULL_VECTOR, NULL_VECTOR);
+	DispatchKeyValue(Particle, "effect_name", Particle_Name);
+	
+	new userid = car;
+	Format(sName, sizeof(sName), "%d", userid+25);
+	DispatchKeyValue(car, "targetname", sName);
+	GetEntPropString(car, Prop_Data, "m_iName", sName, sizeof(sName));
+	
+	Format(sTargetName, sizeof(sTargetName), "%d", userid+1000);
+	DispatchKeyValue(Particle, "targetname", sTargetName);
+	DispatchKeyValue(Particle, "parentname", sName);
+	DispatchSpawn(Particle);
+	DispatchSpawn(Particle);
+	SetVariantString(sName);
+	AcceptEntityInput(Particle, "SetParent", Particle, Particle);
+	ActivateEntity(Particle);
+	AcceptEntityInput(Particle, "start");
+}
+
+stock PanicEvent()
+{
+	if(g_bDisabled)
+	{
+		return;
+	}
+	new Director = CreateEntityByName("info_director");
+	DispatchSpawn(Director);
+	AcceptEntityInput(Director, "ForcePanicEvent");
+	AcceptEntityInput(Director, "Kill");
+}
+
+stock DebugPrintToAll(const String:format[], any:...)
+{
+	if(g_bDisabled)
+	{
+		return;
+	}
+	#if (TEST_DEBUG || TEST_DEBUG_LOG)
+	decl String:buffer[256];
+	
+	VFormat(buffer, sizeof(buffer), format, 2);
+	
+	#if TEST_DEBUG
+	PrintToChatAll("[EC] %s", buffer);
+	PrintToConsole(0, "[EC] %s", buffer);
+	#endif
+	
+	LogMessage("%s", buffer);
+	#else
+	//suppress "format" never used warning
+	if(format[0])
+		return;
+	else
+		return;
+	#endif
 }
 
 
-void ResetPlugin()
+#if 0
+//Stops a sound from all channels - Unused right now
+stock StopSoundPerm(client, String:sound[])
 {
-	g_iRoundStart = 0;
-	g_iPlayerSpawn = 0;
+	if(g_bDisabled)
+	{
+		return;
+	}
+	StopSound(client, SNDCHAN_AUTO, sound);
+	StopSound(client, SNDCHAN_WEAPON, sound);
+	StopSound(client, SNDCHAN_VOICE, sound);
+	StopSound(client, SNDCHAN_ITEM, sound);
+	StopSound(client, SNDCHAN_BODY, sound);
+	StopSound(client, SNDCHAN_STREAM, sound);
+	StopSound(client, SNDCHAN_VOICE_BASE, sound);
+	StopSound(client, SNDCHAN_USER_BASE, sound);
+}
+#endif
+
+public Forward_CarExplode(attacker, car)
+{
+	new bool:result;
+	Call_StartForward(g_hForward_CarExplode);
+	Call_PushCell(attacker);
+	Call_PushCell(car);
+	Call_Finish(_:result);
+	return result;
+}
+
+stock HurtPlayer(victim, attacker)
+{
+	new Handle:pack = CreateDataPack();
+	WritePackCell(pack, victim);
+	WritePackCell(pack, attacker);
+	CreateTimer(0.1, timerHurtSurv, pack);
+}
+
+public Action:timerHurtSurv(Handle:timer, Handle:pack)
+{
+	ResetPack(pack);
+	new client = ReadPackCell(pack);
+	new attacker = ReadPackCell(pack);
+	CloseHandle(pack);
+	IncapSurvivor(client, attacker);
+}
+
+//Force incapacitation -> Force damage (Modified)
+stock IncapSurvivor(client, attacker)
+{
+	if(IsValidEntity(client))
+	{
+		decl String:sUser[256];
+		IntToString(GetClientUserId(client)+25, sUser, sizeof(sUser));
+		new iDmgEntity = CreateEntityByName("point_hurt");
+		DispatchKeyValue(client, "targetname", sUser);
+		DispatchKeyValue(iDmgEntity, "DamageTarget", sUser);
+		DispatchKeyValue(iDmgEntity, "Damage", "700");
+		DispatchKeyValue(iDmgEntity, "DamageType", "8");
+		DispatchSpawn(iDmgEntity);
+		AcceptEntityInput(iDmgEntity, "Hurt", attacker);
+		AcceptEntityInput(iDmgEntity, "Kill");
+	}
+}
+
+stock ClientCommandAll(String:command[])
+{
+	for(new i = 1; i <= MaxClients; i++)
+	{
+		if(IsValidEntity(i) && IsClientInGame(i) && !IsFakeClient(i))
+		{
+			ClientCommand(i, command);
+		}
+	}
+}
+
+stock CreateInferno(attacker, Float:pos[3])
+{
+	if(attacker <= 0)
+	{
+		for(new i = 1; i <= MaxClients; i++)
+		{
+			if(IsValidEntity(i) && IsClientInGame(i) && IsPlayerAlive(i) && GetClientTeam(i) == 2)
+			{
+				attacker = i;
+				break;
+			}
+		}
+	}
+	pos[2]+=32.0;
+	new Float:vel[3], Float:vec[3], Float:ang[3];
+	vel[2] = -300.0
+	vel[0] = GetRandomFloat(100.0, 250.0);
+	vel[1] = GetRandomFloat(100.0, 250.0);
+	ang[0] = GetRandomFloat(0.0, 360.0);
+	ang[1] = GetRandomFloat(0.0, 360.0);
+	ang[2] = GetRandomFloat(-45.0, 45.0);
+	SDKCall(sdkDetonateFire, pos, vec, vel, vec, attacker);
 }
