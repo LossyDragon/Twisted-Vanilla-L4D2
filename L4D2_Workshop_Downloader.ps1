@@ -6,7 +6,7 @@
 # .\L4D2_Workshop_Downloader.ps1 -FilePath "C:\My\Path\To\WorkShopItems.txt"
 # Suports full http urls or just the workshop id.
 param (
-    [string]$FilePath
+    [string]$FilePath = ""
 )
  
 # Variables
@@ -17,7 +17,7 @@ $enteredWorkshopItems = New-Object System.Collections.ArrayList
 $path = $PSScriptRoot
 
 # Check if file path is provided
-if (Test-Path -Path $FilePath) {
+if ([string]::IsNullOrWhiteSpace($FilePath) -eq $false -and (Test-Path -Path $FilePath)) {
     # Read lines from the file and add to the list
     Get-Content -Path $FilePath | ForEach-Object {
         [void]$enteredWorkshopItems.Add($_)
