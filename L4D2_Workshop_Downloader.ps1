@@ -93,6 +93,9 @@ foreach ($fileUrl in $jsonResponse.response.publishedfiledetails) {
 	Write-Host "Downloading: $title"
 	$ProgressPreference = "SilentlyContinue"
 	
+	# Sanitize
+	$filename = $filename -replace '[\[\]]', ''
+	
 	$filePath = Join-Path -Path $path -ChildPath $filename
 	Invoke-WebRequest -Uri $file -OutFile $filePath
 }
