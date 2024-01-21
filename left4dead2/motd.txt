@@ -20,7 +20,7 @@ h3 { text-align: center; }
   <li>This server uses 96 tickrate, you can optimize your client by checking out the steam group.</li>
   <li><span style="color: yellow;">(CO-OP Only)</span> All spawns (Guns, Melee, Health, Upgrades) are removed in favor of spawning them randomly anywhere on the map, Tier 2 included. Look around properly! (Some maps have this feature disabled in favor of their unique design.)</li>
   <li>Weapons have been re-balanced and re-purposed with more unique aspects to them, details about this are on the steam group.</li>
-  <li>Ammo piles are <span style="color: red;"><b>LIMITED</b></span> to one use and can be deployed by Special Ammo boxes.</li>
+  <li>Ammo piles have <span style="color: red;"><b>LIMITED</b></span> percentages of ammo and can be deployed by Special Ammo boxes.</li>
   <li>By entering "give_ammo" in the console while aiming at someone if you and them have the same weapon, your current magazine will be shared to their ammo reserve. This can be bound to a key.</li>
   <li>You can scavenge for ammo of the same weapon by pressing the use key.</li>
   <li>Laser sight upgrades are kept until death or if the weapon is manually dropped.</li>
@@ -32,8 +32,10 @@ h3 { text-align: center; }
   <li><span style="color: yellow;">(CO-OP Only)</span> Say !join to show player management to join survivors or spectate. If you die while afk as survivor, you will be put in spectate and forced to rejoin dead for a respawn.</li>
   <li><span style="color: yellow;">(CO-OP Only)</span> Throwables can be used while incapacitated.</li>
   <li><span style="color: yellow;">(CO-OP Only)</span> Melees can be thrown with "+zoom" or by default middle mouse. This will leave you vulnerable while incapacitated or without a primary.</li>
-  <li><span style="color: yellow;">(CO-OP Only)</span> Reaching a Saferoom below 50 Solid Health will grant 50 Solid Health on the next map.</li>
-  <li><span style="color: yellow;">(CO-OP Only)</span> Mutant Tanks are enabled because regular tanks are too easy. See the Steam Group for more info on them.</li>
+  <li><span style="color: yellow;">(CO-OP Only)</span> Reaching a Saferoom below 50 Solid/Temp Health will grant 50 Solid Health on the next map.</li>
+  <li><span style="color: yellow;">(Campaign Only)</span> Mutant Tanks are enabled because regular tanks are too easy. See the Steam Group for more info on them.</li>
+  <li><span style="color: yellow;">(CO-OP Only)</span> Adrenaline shots can revive downed players while Pain Pills can heal up to 150 to extend bleed out.</li>
+  <li><span style="color: yellow;">(CO-OP Only)</span> Survivors can crawl, drop, pickup and use most items while incapacitated, allowing for situations such as using defibrillator on a dead teammate or sharing items such as Adrenaline to have someone self-revive in tight situations.</li>
   <li>Use <span style="color: LawnGreen;"><i>!csm</i></span> or <span style="color: LawnGreen;"><i>/csm</i></span> in chat to change survivor, avoid using existing survivor models that aren't bots.</li>
   <li><span style="color: yellow;">(CO-OP Only)</span> Total of 4 survivors can join via matchmaking (8 if special lobby is used), steam group members can join up 16, difficulty increases by 25% per player (Tank Health/Common Count, SI count).</li>
   <li>Survivor rag dolls are restored, Defibrillators still work. Ragdolls may be disabled on certain custom maps.</li>
@@ -51,3 +53,4 @@ h3 { text-align: center; }
 <h3>Be sure to check our steam group <b>Twisted Vanilla</b> to learn more about us and this server!<h3>
 </body>
 </html>
+

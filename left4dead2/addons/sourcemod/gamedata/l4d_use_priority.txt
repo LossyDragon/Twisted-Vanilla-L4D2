@@ -2,15 +2,6 @@
 {
 	"#default"
 	{
-		"Offsets"
-		{
-			"OS"
-			{
-				"windows"	"0"
-				"linux"		"1"
-			}
-		}
-
 		"Functions"
 		{
 			"CBaseEntity::GetUsePriority"

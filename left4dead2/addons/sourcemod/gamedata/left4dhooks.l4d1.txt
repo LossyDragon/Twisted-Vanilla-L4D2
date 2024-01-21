@@ -109,6 +109,21 @@
 				}
 			}
 
+			"L4DD::CTankRock::BounceTouch"
+			{
+				"signature"		"CTankRock::BounceTouch"
+				"callconv"		"thiscall"
+				"return"		"int"
+				"this"			"entity"
+				"arguments"
+				{
+					"a1"
+					{
+						"type"	"cbaseentity"
+					}
+				}
+			}
+
 			"L4DD::CDeathFallCamera::Enable"
 			{
 				"signature"		"CDeathFallCamera::Enable"
@@ -401,6 +416,21 @@
 				"callconv"		"thiscall"
 				"return"		"int"
 				"this"			"entity"
+			}
+
+			"L4DD::CTerrorPlayer::TakeOverBot"
+			{
+				"signature"		"CTerrorPlayer::TakeOverBot"
+				"callconv"		"thiscall"
+				"return"		"bool"
+				"this"			"entity"
+				"arguments"
+				{
+					"a1"
+					{
+						"type"	"bool"
+					}
+				}
 			}
 
 			"L4DD::CDirector::IsTeamFull"
@@ -1101,6 +1131,64 @@
 					"a3"
 					{
 						"type"	"int"
+					}
+				}
+			}
+
+			/**
+			 * Thanks to "Psyk0tik" from: https://github.com/Psykotikism/Mutant_Tanks
+			 * CFirstAidKit::StartHealing(CFirstAidKit::HealTargetType)
+			 *
+			 * Note: Detouring as a pre-hook for changing "first_aid_kit_use_duration" per player before healing starts.
+			 * Note: Detouring as a post-hook for changing "first_aid_kit_use_duration" back to default value after healing starts.
+			 * Note for Linux users: Function prototype uses custom registers including the "this" pointer which needs to be registered as param 1.
+			 **/
+			"L4DD::CFirstAidKit::StartHealing"
+			{
+				"signature"	"CFirstAidKit::StartHealing"
+				"linux"
+				{
+					"callconv"	"cdecl"
+					"return"	"void"
+					"this"		"ignore"
+					"arguments"
+					{
+						"this"
+						{
+							"type"		"cbaseentity"
+							"register"	"eax"
+						}
+						"targetType"
+						{
+							"type"		"int"
+							"register"	"edx"
+						}
+					}
+				}
+				"mac"
+				{
+					"callconv"	"thiscall"
+					"return"	"void"
+					"this"		"entity"
+					"arguments"
+					{
+						"targetType"
+						{
+							"type"		"int"
+						}
+					}
+				}
+				"windows"
+				{
+					"callconv"	"thiscall"
+					"return"	"void"
+					"this"		"entity"
+					"arguments"
+					{
+						"targetType"
+						{
+							"type"		"int"
+						}
 					}
 				}
 			}
@@ -1858,6 +1946,26 @@
 				/* ? ? ? ? ? ? 8B ? 8B B7 ? ? ? ? 68 */
 			}
 
+			/**
+			 * Thanks to "Psyk0tik" from: https://github.com/Psykotikism/L4D1-2_Signatures
+			 * CTerrorPlayer::FindUseEntity(float, float, bool *)
+			 *
+			 * How to find on Windows:
+			 * 1. Find the function's offsets with asherkin's VTable dump.
+			 * 2. In IDA Pro, go to the ".rdata" section of the Windows binary.
+			 * 3. Search for "CTerrorPlayer::`vftable'" to jump to the "CTerrorPlayer" vtable.
+			 * 4. Compare your dump's offsets with asherkin's dump's offsets to find the target function.
+			 * 5. Look for the target function in the Windows binary.
+			 **/
+			"CTerrorPlayer::FindUseEntity"
+			{
+				"library"	"server"
+				"linux"		"@_ZN13CTerrorPlayer13FindUseEntityEffPb"
+				"mac"		"@_ZN13CTerrorPlayer13FindUseEntityEffPb"
+				"windows"	"\x2A\x2A\x2A\x2A\x2A\x2A\xB8\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\xD9\x2A\xD9\x2A\x2A\x53"
+				/* ? ? ? ? ? ? B8 ? ? ? ? E8 ? ? ? ? D9 ? D9 ? ? 53 */
+			}
+
 			/*
 			*  Director::ForceVersusStart(Director *this)
 			*/
@@ -1918,6 +2026,15 @@
 				"windows"	"\x51\x56\x8B\x2A\xD9\x2A\x2A\xD8\x2A\x2A\xD9"
 				/* 51 56 8B ? D9 ? ? D8 ? ? D9 */
 				/* Search "Couldn't find a %s Spawn position in %d tries\n", some calls below */
+			}
+
+			"CTerrorPlayer::WarpToValidPositionIfStuck"
+			{
+				"library"	"server"
+				"linux"		"@_ZN13CTerrorPlayer26WarpToValidPositionIfStuckEv.part.204"
+				"windows"	"\x55\x8B\x2A\x83\x2A\x2A\x81\x2A\x2A\x2A\x2A\x2A\x53\x55\x56\x8B\x2A\x80\x2A\x2A\x2A\x2A\x2A\x2A\x57"
+				/* 55 8B ? 83 ? ? 81 ? ? ? ? ? 53 55 56 8B ? 80 ? ? ? ? ? ? 57 */
+				/* Search: "unsticking %s from %.1f %.1f %.1f to %.1f %.1f %.1f\n" */
 			}
 
 			/*
@@ -2007,6 +2124,26 @@
 				*	4. Search: "waiting_checkpoint_button_used" to get into "CFinaleTrigger::Use"
 				*	5. Using this function and offset to our call to obtain target function (since it's bytes are too short and not unique)
 				*/
+			}
+
+			/**
+			 * Thanks to "Psyk0tik" from: https://github.com/Psykotikism/L4D1-2_Signatures
+			 * float NavAreaTravelDistance<ShortestPathCost>(Vector const&, Vector const&, ShortestPathCost &)
+			 *
+			 * How to find on Windows:
+			 * 1. Find the "CNavArea::ComputeEarliestOccupyTimes" function's offsets with asherkin's VTable dump.
+			 * 2. In IDA Pro, go to the ".rdata" section of the Windows binary.
+			 * 3. Search for "CNavArea::`vftable'" to jump to the "CNavArea" vtable.
+			 * 4. Compare your dump's offsets with asherkin's dump's offsets to find the "CNavArea::ComputeEarliestOccupyTimes" function.
+			 * 5. Look for the "CNavArea::ComputeEarliestOccupyTimes" function in the Windows binary.
+			 * 6. The first function call above both "info_player_counterterrorist" strings in "CNavArea::ComputeEarliestOccupyTimes" should be this function.
+			 **/
+			"NavAreaTravelDistance"
+			{
+				"library"	"server"
+				"linux"		"@_Z21NavAreaTravelDistanceI16ShortestPathCostEfRK6VectorS3_RT_.constprop.127"
+				"windows"	"\x2A\x2A\x2A\x2A\x2A\x2A\xD9\x05\x2A\x2A\x2A\x2A\x83\x2A\x2A\x53\x8B"
+				/* ? ? ? ? ? ? D9 05 ? ? ? ? 83 ? ? 53 8B */
 			}
 
 			/**
@@ -2103,6 +2240,28 @@
 				"linux"		"@_ZN9CTankRock9OnReleaseERK6VectorRK6QAngleS2_S2_.constprop.121"
 				"windows"	"\x2A\x2A\x2A\x2A\x2A\x2A\x2A\x2A\x2A\x2A\x2A\xC7\x86\x2A\x2A\x2A\x2A\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\x8B\x2A\x2A\x2A\x57"
 						/* ? ? ? ? ? ? ? ? ? ? ? C7 86 ? ? ? ? ? ? ? ? E8 ? ? ? ? 8B ? ? ? 57 */
+			}
+
+			/**
+			 * CTankRock::BounceTouch(CBaseEntity *)
+			 *
+			 * How to find on Windows:
+			 * 1a. Search for the "HulkZombie.ThrownProjectileHit" string.
+			 * 2a. One of the functions that references that string should be this function.
+			 *
+			 * 1b. Find the function's offsets with asherkin's VTable dump.
+			 * 2b. In IDA Pro, go to the ".rdata" section of the Windows binary.
+			 * 3b. Search for "CTankRock::`vftable'" to jump to the "CTankRock" vtable.
+			 * 4b. Compare your dump's offsets with asherkin's dump's offsets to find the target function.
+			 * 5b. Look for the target function in the Windows binary.
+			 **/
+			"CTankRock::BounceTouch"
+			{
+				"library"	"server"
+				"linux"		"@_ZN9CTankRock11BounceTouchEP11CBaseEntity"
+				"mac"		"@_ZN9CTankRock11BounceTouchEP11CBaseEntity"
+				"windows"	"\x2A\x2A\x2A\x2A\x2A\x2A\x53\x8B\x9C\x2A\x2A\x2A\x2A\x2A\x0F"
+						/* ? ? ? ? ? ? 53 8B 9C ? ? ? ? ? 0F */
 			}
 
 			/**
@@ -2767,6 +2926,25 @@
 				/* Search: "Fire prop detonated %.0f,%.0f,%.0f.  Breaker:%s. Attacker:%s.\n" */
 			}
 
+			/**
+			 * Thanks to "Psyk0tik" from: https://github.com/Psykotikism/Mutant_Tanks
+			 * CFirstAidKit::StartHealing(CFirstAidKit::HealTargetType)
+			 *
+			 * Note: Used for detouring the function.
+			 *
+			 * How to find on Windows:
+			 * 1. Search for the "PlayerHealing" or "PlayerHealingOther" string.
+			 * 2. The string can only be found in this function.
+			 **/
+			"CFirstAidKit::StartHealing"
+			{
+				"library"	"server"
+				"linux"		"@_ZN12CFirstAidKit12StartHealingENS_14HealTargetTypeE.part.43"
+				"mac"		"@_ZN12CFirstAidKit12StartHealingENS_14HealTargetTypeE"
+				"windows"	"\x2A\x2A\x2A\x2A\x2A\x2A\x2A\x2A\x53\x55\x56\x8D\xB1\x2A\x2A\x2A\x2A\x57\x89"
+						/* ? ? ? ? ? ? ? ? 53 55 56 8D B1 ? ? ? ? 57 89 */
+			}
+
 			"BossZombiePlayerBot::ChooseVictim"
 			{
 				"library"		"server"
@@ -2876,6 +3054,18 @@
 				"linux"		"@_ZNK8CNavMesh10GetNavAreaERK6Vectorf"
 				"windows"	"\x83\xEC\x2A\x56\x8B\xF1\x83\x7E\x2A\x2A\x75\x09\x33\xC0\x5E\x83\xC4"
 				/* 83 EC ? 56 8B F1 83 7E ? ? 75 09 33 C0 5E 83 C4 */
+			}
+
+			/*
+			 * CNavArea::IsConnected(CNavArea const*, NavDirType)const
+			 */
+			"CNavArea::IsConnected"
+			{
+				"library"	"server"
+				"linux"		"@_ZNK8CNavArea11IsConnectedEPKS_10NavDirType"
+				"windows"	"\x55\x8B\x2A\x2A\x2A\x3B\x2A\x75\x2A\xB0\x2A\x5D\xC2"
+				/* 55 8B ? ? ? 3B ? 75 ? B0 ? 5D C2 */
+				/* Search: "ScriptIsConnectedArea" - Go to unique sub below, return at the bottom calls target function */
 			}
 
 			/*
@@ -3069,6 +3259,30 @@
 				"windows"	"\x8B\x2A\x2A\x2A\x05\x2A\x2A\x2A\x2A\x3D\x2A\x2A\x2A\x2A\x77"
 				/* 8B ? ? ? 05 ? ? ? ? 3D ? ? ? ? 77 */
 				/* Search "Motion controlled animation" - few calls above. */ // Found by "SilverShot"
+			}
+
+			/*
+			 * CTerrorPlayer::ReleaseTongueVictim(CTerrorPlayer *this, bool)
+			 */
+			"CTerrorPlayer::ReleaseTongueVictim"
+			{
+				"library"	"server"
+				"linux"		"@_ZN13CTerrorPlayer19ReleaseTongueVictimEb"
+				"windows"	"\x8B\x2A\x2A\x2A\x2A\x2A\x83\x2A\x2A\x55\x8B\x2A\x8B\x2A\x2A\x2A\x2A\x2A\x83\x2A\x2A\x57"
+				/* 8B ? ? ? ? ? 83 ? ? 55 8B ? 8B ? ? ? ? ? 83 ? ? 57 */
+				/* Search: "Tongue letting go because of damage" target function is called not far below */ // Found by "SilverShot".
+			}
+
+			/*
+			 * CTerrorPlayer::OnPounceEnded(CTerrorPlayer *this)
+			 */
+			"CTerrorPlayer::OnPounceEnded"
+			{
+				"library"	"server"
+				"linux"		"@_ZN13CTerrorPlayer13OnPounceEndedEv"
+				"windows"	"\x53\x8B\x2A\x80\x2A\x2A\x2A\x2A\x2A\x2A\x56\x74\x2A\x8D"
+				/* 53 8B ? 80 ? ? ? ? ? ? 56 74 ? 8D */
+				/* Search: "pounce_end */ // Found by "SilverShot".
 			}
 
 			/*

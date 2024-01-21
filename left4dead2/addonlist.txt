@@ -1,0 +1,9 @@
+"AddonList"
+{
+	"audio_helrika_vocalizer.vpk"		"1"
+	"audio_talker_twisted_vanilla.vpk"		"1"
+	"hitbox_knife.vpk"		"1"
+	"hitbox_pitchfork.vpk"		"1"
+	"L4D2_L4D1_si_ragdolls.vpk"		"1"
+	"l4d2_gascans.vpk"		"1"
+}
